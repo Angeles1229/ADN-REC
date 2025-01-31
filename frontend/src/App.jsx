@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import Paciente from "./pages/paciente";
-import PacienteForm from "./pages/pacientesform";
+import Paciente from "./pages/pacientes/paciente";
+import PacienteForm from "./pages/pacientes/pacientesform";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import AnalisisADN from "./pages/Analisis";
-import Grafico from "./pages/Grafico";
+import AnalisisADN from "./pages/analisis/Analisis";
+import Grafico from "./pages/grafico/Grafico";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext"; // Importa el contexto
 import "./index.css";

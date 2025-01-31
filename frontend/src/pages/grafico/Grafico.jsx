@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-import "../styles/grafico.css";
+import "../../styles/grafico.css";
+
+
 
 function Grafico({ data }) {
   const svgRef = useRef();

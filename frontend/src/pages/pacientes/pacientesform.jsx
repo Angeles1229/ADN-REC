@@ -1,7 +1,8 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom"; // Para redirigir después de guardar
-import "../styles/formpaciente.css"; 
+import "../../styles/formpaciente.css";
+
 
 function PacienteForm({ initialData, onSubmit }) {
   const navigate = useNavigate(); // Para redirigir después de guardar

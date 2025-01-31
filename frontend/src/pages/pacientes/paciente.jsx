@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { getPacientesRequest, deletePaciente, updatePaciente, createPaciente } from "../../api/paciente";
 import PacienteForm from "./pacientesform";
 import { useNavigate } from "react-router-dom"; // Para redirigir
-import "../styles/paciente.css";
+import "../../styles/paciente.css";
+
 
 function Paciente() {
   const [pacientes, setPacientes] = useState([]);

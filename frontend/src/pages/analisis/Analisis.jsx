@@ -2,7 +2,8 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { subirArchivoADN, getPacienteById } from "../../api/analisi";
 import Grafico from "../grafico/Grafico"; // ✅ Importamos el gráfico
-import "../styles/analisis.css";
+import "../../styles/analisis.css";
+
 
 function AnalisisADN() {
   const navigate = useNavigate();
