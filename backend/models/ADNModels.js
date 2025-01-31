@@ -14,9 +14,9 @@ const LaboratoristaModel = db.define('Laboratoristas', {
     timestamps: false
 });
 
-// Modelo Pacientes (✅ Corregido: Se añadió `id` como primaryKey)
+// Modelo Pacientes 
 const PacienteModel = db.define('pacientes', {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }, // ✅ Agregado
+    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }, 
     nombre: { type: DataTypes.STRING(100), allowNull: false },
     apellido: { type: DataTypes.STRING(100), allowNull: false },
     edad: { type: DataTypes.INTEGER, allowNull: false },
