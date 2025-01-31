@@ -1,4 +1,4 @@
-# 🧬 Sistema de Gestión de Pacientes y Análisis de ADN 🏥
+# 🧬 ADN-REC 🏥
 
 ## 📌 Propuesta del Proyecto
 
