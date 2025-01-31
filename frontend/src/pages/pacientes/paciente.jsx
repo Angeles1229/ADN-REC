@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getPacientesRequest, deletePaciente, updatePaciente, createPaciente } from "../../api/paciente";
 import PacienteForm from "./pacientesform";
-import { useNavigate } from "react-router-dom"; // Para redirigir
+import { useNavigate } from "react-router-dom"; 
 import "../../styles/paciente.css";
 
 
@@ -11,8 +11,8 @@ function Paciente() {
   const [searchTerm, setSearchTerm] = useState("");
   const [editingPaciente, setEditingPaciente] = useState(null);
   const [addingPaciente, setAddingPaciente] = useState(false);
-  const [selectedPacienteForADN, setSelectedPacienteForADN] = useState(null); // Estado para el ADN
-  const navigate = useNavigate(); // Hook para redirigir
+  const [selectedPacienteForADN, setSelectedPacienteForADN] = useState(null);
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     async function loadPacientes() {

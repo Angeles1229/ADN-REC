@@ -1,7 +1,7 @@
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { subirArchivoADN, getPacienteById } from "../../api/analisi";
-import Grafico from "../grafico/Grafico"; // ✅ Importamos el gráfico
+import Grafico from "../grafico/Grafico"; 
 import "../../styles/analisis.css";
 
 
@@ -13,7 +13,7 @@ function AnalisisADN() {
   const [archivo, setArchivo] = useState(null);
   const [resultado, setResultado] = useState(null);
   const [cargando, setCargando] = useState(false);
-  const [dataADN, setDataADN] = useState([]); // ✅ Estado para los datos del gráfico
+  const [dataADN, setDataADN] = useState([]); 
 
   // Obtener los datos del paciente con su ID
   useEffect(() => {

@@ -13,12 +13,12 @@ function Grafico({ data }) {
     console.log("Datos recibidos en React:", data);
 
     if (data.length > 0) {
-      const width = data.length * 25 + 150; // Reducido para menor tamaño
-      const height = 400; // Reducido para hacer más compacto
-      const radius = 10; // Tamaño más pequeño
-      const helixSpacing = 50; // Menos separación en la hélice
-      const curveHeight = 80; // Menos altura de curvatura
-      const xSpacing = 25; // Menos separación entre pares de bases
+      const width = data.length * 25 + 150; 
+      const height = 400; 
+      const radius = 10; 
+      const helixSpacing = 50; 
+      const curveHeight = 80; 
+      const xSpacing = 25; 
 
       const colors = {
         A: "#FF5733",
