@@ -1,0 +1,104 @@
+/* Estilos generales */
+.bodye {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  
+  color: #333;
+}
+
+/* Contenedor del análisis */
+.analisis-container {
+  width: 50%;
+  margin: 50px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Títulos */
+.analisis-container h1 {
+  font-size: 2rem;
+  color: #163742;
+}
+
+.analisis-container h2 {
+  font-size: 1.4rem;
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+/* Input de archivo */
+.analisis-container input[type="file"] {
+  display: block;
+  margin: 20px auto;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 80%;
+}
+
+/* Botones */
+.analisis-container button {
+  width: 80%;
+  padding: 12px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
+
+/* Botón de subir archivo */
+.submit-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.submit-button:hover {
+  background-color: #218838;
+}
+
+/* Botón para regresar */
+.back-button {
+  background-color: #163742;
+  color: #ffffff;
+  margin-top: 20px;
+}
+
+.back-button:hover {
+  background-color: #3f6084;
+}
+
+/* Resultado del análisis */
+.analisis-resultado {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background: #e9f5ff;
+ 
+}
+
+.analisis-resultado h3 {
+  color: #163742;
+  font-size: 1.4rem;
+}
+
+.analisis-resultado p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Estilos del gráfico */
+.grafico-container {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}

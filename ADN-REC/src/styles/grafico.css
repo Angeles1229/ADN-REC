@@ -1,0 +1,114 @@
+/* Contenedor general */
+.bodyg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #4e4f51, #1c2e4a);
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+/* Título */
+h1 {
+  font-size: 2.5rem;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Contenedor de la imagen del ADN sano */
+.image-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.adn-image {
+  width: 300px;
+  max-width: 50%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Contenedor del gráfico */
+.chart-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Estilos para el gráfico de D3 */
+#chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Ajuste de colores de nucleótidos */
+rect.A { fill: #FF0000; }
+rect.T { fill: #0000FF; }
+rect.C { fill: #00FF00; }
+rect.G { fill: #FFA500; }
+
+/* Resaltar mutaciones */
+rect.mutacion {
+  fill: #FFD700 !important;
+  stroke: #ff0;
+  stroke-width: 2px;
+}
+
+/* Etiquetas sobre los nucleótidos */
+text {
+  font-size: 14px;
+  font-weight: bold;
+  fill: white;
+  text-anchor: middle;
+}
+
+/* Animación */
+rect:hover {
+  transform: scale(1.2);
+  filter: brightness(1.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bodyg {
+      padding: 20px;
+  }
+
+  h1 {
+      font-size: 1.8rem;
+  }
+
+  .adn-image {
+      width: 100%;
+  }
+
+  #chart {
+      width: 100%;
+      overflow-x: auto;
+  }
+}
+
+.legend {
+  color: #FFD700; /* Cambia el color del texto de la leyenda */
+}
+
+.legend div {
+  color: #FFD700; /* Asegura que el color de los textos de cada item de la leyenda sea dorado */
+}
+
+.legend h3 {
+  color: #FFD700; /* Cambia el color del título 'Leyenda' */
+}
+
+.legend div span {
+  font-weight: bold;
+  font-size: 1.1rem;
+}

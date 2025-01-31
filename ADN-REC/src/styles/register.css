@@ -1,0 +1,97 @@
+/* Contenedor principal */
+.bodyRegister {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Mueve el contenido hacia la parte superior */
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #6b6e72, #35435c); /* Fondo gradiente */
+    margin: 0;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+  
+  /* Título */
+  .register-title {
+    color: #ffffff;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Mensaje de error o éxito */
+  .register-message {
+    font-size: 1rem;
+    color: #e74c3c; /* Rojo para mensajes de error */
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  /* Formulario */
+  .register-form {
+    background-color: #ffffff;
+    padding: 1.2rem; /* Reducir ligeramente el padding */
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    margin-top: 3rem; /* Espaciado adicional desde arriba */
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem; /* Reduce ligeramente el espacio entre los elementos */
+  }
+  
+  /* Etiquetas */
+  .form-group label {
+    font-size: 0.9rem;
+    color: #333333;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  /* Inputs */
+  .form-group .form-input {
+    width: 100%;
+    padding: 0.4rem;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  
+  /* Botón */
+  .register-button2 {
+    background-color: #065176cf; /* Azul moderno */
+    color: #ffffff;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .register-button2:hover {
+    background-color: #2d343b; /* Cambia a un color más claro al pasar el cursor */
+    transform: scale(1.05);
+  }
+  
+  /* Enlace al login */
+  .login-link {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    text-align: center;
+    color: #ffffff;
+  }
+  
+  .login-link a {
+    color: #4e54c8;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .login-link a:hover {
+    color: #8f94fb; /* Cambia a un color más claro al pasar el cursor */
+  }
+  

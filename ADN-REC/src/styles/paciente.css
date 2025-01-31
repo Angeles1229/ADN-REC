@@ -1,0 +1,197 @@
+/* Contenedor principal */
+.bodyp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #6b6e72, #35435c); /* Fondo gradiente */
+    min-height: 100vh;
+    padding: 2rem;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+/* Título */
+.bodyp h1 {
+    color: #ffffff; /* Verde moderno */
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    text-align: center;
+}
+
+/* Contenedor de búsqueda y botón */
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+/* Campo de búsqueda */
+.search-container input[type="text"] {
+    width: 300px;
+    padding: 0.6rem;
+    border-radius: 15px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Botón agregar paciente */
+.search-container button {
+    background-color: #4e54c8; /* Azul moderno */
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.search-container button:hover {
+    background-color: #8f94fb; /* Azul claro */
+    transform: scale(1.05);
+}
+
+/* Lista de pacientes */
+/* Lista de pacientes */
+.bodyp ul {
+    list-style: none;
+    padding: 0;
+    
+}
+
+.bodyp li {
+    background-color: #2c2c2c;
+    padding: 1rem;
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center; /* Asegura que el texto y botones estén alineados verticalmente */
+    gap: 3rem; /* Reduce el espaciado entre texto y botones */
+    color: white;
+    font-size: 1rem;
+}
+
+
+/* Contenedor de botones */
+.bodyp li .button-group {
+    display: flex;
+    gap: 0.3rem; /* Espaciado entre los botones */
+    /* Empuja el grupo de botones hacia la derecha */
+}
+
+
+/* Botones de cada paciente */
+.bodyp li button {
+    background-color: #343a44;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.bodyp li button:hover {
+    background-color: #4e54c8;
+}
+
+
+/* Estilo del formulario de edición */
+/* Contenedor flotante para el formulario */
+.bodyp .edit-form-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95); /* Fondo blanco semitransparente */
+    padding: 2rem;
+    border-radius: 15px; /* Bordes redondeados */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Sombra flotante */
+    z-index: 1000; /* Asegura que esté sobre otros elementos */
+    width: 90%;
+    max-width: 500px; /* Ancho máximo para mantenerlo compacto */
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Título dentro de la tarjeta */
+.bodyp .edit-form-container h2 {
+    text-align: center;
+    color: #333; /* Texto oscuro */
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+/* Campos de entrada y select */
+.bodyp .edit-form-container input,
+.bodyp .edit-form-container select {
+    width: 100%; /* Ocupa todo el ancho */
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    color: #333;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones */
+.bodyp .edit-form-container button {
+    width: calc(50% - 0.5rem);
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.bodyp .edit-form-container button[type="submit"] {
+    background-color: #4e54c8; /* Azul moderno */
+    color: white;
+    font-weight: bold;
+}
+
+.bodyp .edit-form-container button[type="submit"]:hover {
+    background-color: #8f94fb; /* Azul claro */
+    transform: scale(1.05);
+}
+
+.bodyp .edit-form-container button.cancel {
+    background-color: #ff4c4c; /* Rojo */
+    color: white;
+}
+
+.bodyp .edit-form-container button.cancel:hover {
+    background-color: #ff7b7b;
+    transform: scale(1.05);
+}
+
+/* Animación para la tarjeta */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Fondo oscuro para el resto de la página cuando se abre el formulario */
+.bodyp .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Fondo negro semitransparente */
+    z-index: 999; /* Detrás del formulario */
+}

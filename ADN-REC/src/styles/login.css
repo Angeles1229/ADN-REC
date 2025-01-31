@@ -1,0 +1,98 @@
+/* Login Container */
+/* Login Container */
+/* Centrado del contenedor principal */
+.bodyLogin {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Mueve el formulario hacia la parte superior */
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #6b6e72, #35435c); /* Fondo gradiente */
+  margin: 0;
+  padding: 2rem;
+  box-sizing: border-box;
+  padding-top: 5rem; /* Agrega espacio extra desde la parte superior */
+}
+
+/* Título */
+.bodyLogin h1 {
+  color: #ffffff; /* Cambia el verde a blanco */
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Formulario */
+.bodyLogin form {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Etiquetas */
+.bodyLogin label {
+  font-size: 1rem;
+  color: #333333; /* Cambia el verde a un color más neutro */
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Inputs */
+.bodyLogin input {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Botón */
+.bodyLogin button {
+  background-color: #3b7682; /* Azul moderno */
+  color: #ffffff;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.bodyLogin button:hover {
+  background-color: #3b3b40; /* Cambia a un color más claro al pasar el cursor */
+  transform: scale(1.05);
+}
+
+/* Mensaje de error o éxito */
+.bodyLogin p {
+  font-size: 1rem;
+  color: #e74c3c; /* Rojo para mensajes de error */
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+
+/* Button */
+.login-button {
+  background-color: #343a44;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.login-button:hover {
+  background-color: #eceff2;
+  transform: scale(1.05);
+}
