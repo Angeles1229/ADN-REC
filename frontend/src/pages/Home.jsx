@@ -4,17 +4,36 @@ import "../styles/home.css";
 
 function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [laboratorista, setLaboratorista] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token); // Si hay token, isAuthenticated será true
+    console.log("🔍 Token almacenado en localStorage:", token); // 🔴 Verifica el token
+  
+    setIsAuthenticated(!!token);
+  
+    if (token) {
+      fetch("http://localhost:4000/api/laboratoristas/perfil", { 
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("🔍 Datos recibidos del backend:", data); // 🔴 Verifica la respuesta del backend
+        if (data.nombre) {
+          setLaboratorista(`${data.nombre} ${data.apellido}`);
+        }
+      })
+      .catch((err) => console.error("❌ Error al obtener el perfil:", err));
+    }
   }, []);
+  
+  
 
   return (
     <div className="home-container">
       <div className="hero-section">
         <h1 className="hero-title">
-          Bienvenido a <span>ADN-REC</span>
+          Bienvenido {laboratorista ? laboratorista : ""} a <span>ADN-REC</span>
         </h1>
         <p className="hero-description">
           Descubre cómo nuestra tecnología puede ayudarte a analizar secuencias de ADN y detectar mutaciones genéticas.

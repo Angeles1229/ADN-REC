@@ -96,4 +96,34 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.get("/perfil", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    console.log("🔍 Token recibido en /perfil:", token);
+
+    if (!token) return res.status(401).json({ message: "No autorizado" });
+
+    const decoded = jwt.verify(token, SECRET_KEY);
+    console.log("✅ Token decodificado:", decoded);
+
+    const laboratorista = await LaboratoristaModel.findByPk(decoded.id, {
+      attributes: ["nombre", "apellido"]
+    });
+
+    if (!laboratorista) {
+      console.log("❌ No se encontró el laboratorista con ID:", decoded.id);
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    console.log("✅ Perfil encontrado:", laboratorista);
+    res.json({ nombre: laboratorista.nombre, apellido: laboratorista.apellido });
+  } catch (error) {
+    console.error("❌ Error en /perfil:", error);
+    res.status(500).json({ message: "Error al obtener el perfil" });
+  }
+});
+
+
+
+
 export default router;

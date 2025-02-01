@@ -26,7 +26,7 @@ function PacienteForm({ initialData, onSubmit }) {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             setSubmitting(true);
-
+          
             const laboratoristaId = localStorage.getItem("laboratorista_id");
             if (!laboratoristaId) {
               Swal.fire({
@@ -38,21 +38,20 @@ function PacienteForm({ initialData, onSubmit }) {
               setSubmitting(false);
               return;
             }
-
-            const pacienteData = { ...values, laboratorista_id: laboratoristaId };
+          
+            const pacienteData = { ...values, laboratorista_id: parseInt(laboratoristaId) }; // ✅ Convertir a número
             console.log("📩 Datos enviados al backend:", pacienteData); // ✅ Depuración
-
+          
             try {
               const response = await fetch("http://localhost:4000/api/pacientes", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(pacienteData),
               });
-
+          
               const data = await response.json();
-
+          
               if (response.ok) {
-                // Muestra SweetAlert2 y redirige después de aceptar
                 Swal.fire({
                   title: "Paciente agregado",
                   text: "El paciente ha sido registrado exitosamente.",
@@ -60,9 +59,9 @@ function PacienteForm({ initialData, onSubmit }) {
                   confirmButtonText: "Aceptar"
                 }).then(() => {
                   resetForm();
-                  window.location.reload(); // 🔄 Recargar la página completamente
+                  window.location.reload();
                 });
-
+          
               } else {
                 Swal.fire({
                   title: "Error",
@@ -80,9 +79,10 @@ function PacienteForm({ initialData, onSubmit }) {
                 confirmButtonText: "Aceptar"
               });
             }
-
+          
             setSubmitting(false);
           }}
+          
         >
           {({ isSubmitting }) => (
             <Form className="form-container">

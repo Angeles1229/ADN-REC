@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"; // Importa el contexto
 import "../styles/login.css";
 import Swal from "sweetalert2";
+
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
@@ -25,7 +26,13 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage("Inicio de sesión exitoso");
+        console.log("✅ Token recibido:", data.token);
+        console.log("✅ ID del laboratorista recibido:", data.id); // ✅ Depuración del ID
+
+        // Guardar token e ID del laboratorista en localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("laboratorista_id", data.id); // ✅ Guardar el ID
+
         login(data.token); // Llama a la función login del contexto
 
         // Muestra SweetAlert2
