@@ -1,9 +1,15 @@
-import { PacienteModel } from "../models/ADNModels.js";
+import { PacienteModel, LaboratoristaModel } from "../models/ADNModels.js";
 
-// 🔹 Obtener todos los pacientes
+
+// 🔹 Obtener pacientes filtrados por laboratorista_id desde el frontend
 export const getPacientes = async (req, res) => {
   try {
-    const pacientes = await PacienteModel.findAll();
+    const laboratoristaId = req.user.id; // Obtener el ID desde el token
+
+    const pacientes = await PacienteModel.findAll({
+      where: { laboratorista_id: laboratoristaId }
+    });
+
     res.json(pacientes);
   } catch (error) {
     console.error("Error en getPacientes:", error);

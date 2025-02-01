@@ -4,9 +4,13 @@ const API_URL = "http://localhost:4000/api/pacientes"; // ✅ URL centralizada
 
 // Obtener todos los pacientes
 export const getPacientesRequest = async () => {
-  const response = await axios.get(API_URL);
+  const token = localStorage.getItem("token"); // Asegurar que el token está almacenado
+  const response = await axios.get(API_URL, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   return response.data;
 };
+
 
 // Crear un paciente (con headers correctos)
 export const createPaciente = async (paciente) => {
