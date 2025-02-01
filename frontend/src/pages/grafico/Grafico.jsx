@@ -2,23 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import "../../styles/grafico.css";
 
-
-
 function Grafico({ data }) {
   const svgRef = useRef();
   const containerRef = useRef();
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const [scrollPos, setScrollPos] = useState(0);
 
   useEffect(() => {
-    console.log("Datos recibidos en React:", data);
-
     if (data.length > 0) {
-      const width = data.length * 25 + 150; 
-      const height = 400; 
-      const radius = 10; 
-      const helixSpacing = 50; 
-      const curveHeight = 80; 
-      const xSpacing = 25; 
+      const width = Math.max(data.length * 25 + 150, window.innerWidth * 0.9);
+      const height = 400;
+      const radius = 12;
+      const helixSpacing = 50;
+      const curveHeight = 80;
+      const xSpacing = 30;
 
       const colors = {
         A: "#FF5733",
@@ -30,114 +26,82 @@ function Grafico({ data }) {
 
       const svg = d3.select(svgRef.current);
       svg.selectAll("*").remove();
+      svg.attr("width", width).attr("height", height);
 
-      const g = svg
-        .attr("width", width)
-        .attr("height", height)
-        .append("g")
-        .attr("transform", `translate(${width / 10}, ${height / 2})`);
+      const g = svg.append("g").attr("transform", `translate(${width / 10}, ${height / 2})`);
+
+      const tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("background", "rgba(0, 0, 0, 0.8)")
+        .style("color", "#fff")
+        .style("padding", "8px 12px")
+        .style("border-radius", "5px")
+        .style("box-shadow", "0px 0px 10px rgba(0, 0, 0, 0.5)")
+        .style("font-size", "14px")
+        .style("opacity", 0);
 
       data.forEach((d, i) => {
         const x = i * xSpacing;
         const y1 = Math.sin(i * 0.3) * curveHeight - helixSpacing;
         const y2 = Math.sin(i * 0.3) * curveHeight + helixSpacing;
 
-        const nucleotido = d["nucleotido"] ? d["nucleotido"].trim().toUpperCase() : undefined;
-        const isMutated =
-          d["mutacion"] !== null &&
-          d["mutacion"] !== undefined &&
-          String(d["mutacion"]).trim() !== "" &&
-          String(d["mutacion"]).toUpperCase() !== "NAN";
+        const nucleotido = d["nucleotido"] ? d["nucleotido"].trim().toUpperCase() : "";
+        const isMutated = d["mutacion"] === true;
 
         const baseColor = colors[nucleotido] || "#999";
         const mutationColor = colors.mutacion;
 
-        console.log(`Nucleótido: ${nucleotido}, Color: ${baseColor}, Mutado: ${isMutated}`);
+        const circles = [
+          { cx: x, cy: y1 },
+          { cx: x, cy: y2 }
+        ];
 
-        // Dibujar las bases nitrogenadas
-        g.append("circle")
-          .attr("cx", x)
-          .attr("cy", y1)
-          .attr("r", radius)
-          .attr("fill", baseColor);
-
-        g.append("circle")
-          .attr("cx", x)
-          .attr("cy", y2)
-          .attr("r", radius)
-          .attr("fill", baseColor);
-
-        if (isMutated) {
+        circles.forEach(({ cx, cy }) => {
           g.append("circle")
-            .attr("cx", x)
-            .attr("cy", y1)
-            .attr("r", radius * 0.8)
-            .attr("fill", mutationColor)
-            .attr("stroke", "#000")
-            .attr("stroke-width", "1.5px");
+            .attr("cx", cx)
+            .attr("cy", cy)
+            .attr("r", radius)
+            .attr("fill", isMutated ? mutationColor : baseColor)
+            .attr("opacity", 0.8)
+            .on("mouseover", function (event) {
+              d3.select(this).transition().duration(200).attr("r", radius * 1.5);
+              tooltip.style("opacity", 1)
+                .html(`Nucleótido: ${nucleotido}<br>Posición: ${d.posicion}<br>Mutación: ${isMutated ? "Sí" : "No"}`)
+                .style("left", event.pageX + 15 + "px")
+                .style("top", event.pageY - 25 + "px");
+            })
+            .on("mousemove", function (event) {
+              tooltip.style("left", event.pageX + 15 + "px")
+                     .style("top", event.pageY - 25 + "px");
+            })
+            .on("mouseout", function () {
+              d3.select(this).transition().duration(200).attr("r", radius);
+              tooltip.style("opacity", 0);
+            });
+        });
 
-          g.append("circle")
-            .attr("cx", x)
-            .attr("cy", y2)
-            .attr("r", radius * 0.8)
-            .attr("fill", mutationColor)
-            .attr("stroke", "#000")
-            .attr("stroke-width", "1.5px");
-        }
-
-        // Conexión entre pares de bases (corrección de línea blanca)
         g.append("path")
           .attr("d", `M ${x},${y1} Q ${x + radius},${(y1 + y2) / 2} ${x},${y2}`)
-          .attr("stroke", "#888") // Cambiado a gris en vez de blanco
+          .attr("stroke", "#666")
           .attr("fill", "none")
-          .attr("stroke-width", 2); // Reducido para menor visibilidad
+          .attr("stroke-width", 2)
+          .attr("stroke-opacity", 0.8);
       });
     }
   }, [data]);
-
-  const handleScroll = (event) => {
-    const newScroll = event.target.value;
-    setScrollPosition(newScroll);
-    containerRef.current.scrollLeft = newScroll;
-  };
 
   return (
     <div className="bodyg">
       <div style={{ textAlign: "center", marginTop: "20px" }}>
         <h1>ADN Analizado</h1>
+
         <div
           ref={containerRef}
           className="chart-container"
-          style={{
-            width: "100%",
-            overflowX: "auto",
-            whiteSpace: "nowrap",
-            border: "1px solid #ddd",
-            paddingBottom: "10px",
-          }}
+          style={{ width: "100%", overflowX: "auto", whiteSpace: "nowrap", paddingBottom: "10px" }}
         >
           <svg ref={svgRef}></svg>
-        </div>
-
-        <div className="legend">
-          <h3>Leyenda</h3>
-          <div style={{ display: "flex", justifyContent: "center", gap: "15px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <div style={{ backgroundColor: "#FF5733", width: "18px", height: "18px" }}></div> <span>Adenina (A)</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <div style={{ backgroundColor: "#337BFF", width: "18px", height: "18px" }}></div> <span>Timina (T)</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <div style={{ backgroundColor: "#33FF57", width: "18px", height: "18px" }}></div> <span>Citosina (C)</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <div style={{ backgroundColor: "#FFC733", width: "18px", height: "18px" }}></div> <span>Guanina (G)</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              <div style={{ backgroundColor: "#D433FF", width: "18px", height: "18px", border: "1.5px solid black" }}></div> <span>Mutación</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

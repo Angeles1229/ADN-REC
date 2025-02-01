@@ -1,15 +1,19 @@
 import { AnalisisADNModel, EnfermedadModel } from "../models/ADNModels.js";
 import fs from "fs";
 import csv from "csv-parser";
+import multer from "multer";
 
 // Middleware para manejar la subida de archivos
-import multer from "multer";
 const upload = multer({ dest: "uploads/" });
 
 const analizarADN = async (req, res) => {
   try {
     const { paciente_id } = req.body;
-    const archivo = req.file.path;
+    const archivo = req.file?.path;
+
+    if (!archivo) {
+      return res.status(400).json({ error: "No se proporcionó un archivo válido." });
+    }
 
     // Crear el análisis en la base de datos
     const nuevoAnalisis = await AnalisisADNModel.create({
@@ -17,87 +21,113 @@ const analizarADN = async (req, res) => {
       nombre_archivo: archivo,
     });
 
-    // 🔹 Inicializar variables
+    // Variables para almacenar datos
     const mutacionesDetectadas = new Set();
     const genesDetectados = new Set();
-    const secuenciaADN = []; // ✅ Ahora se almacenarán correctamente los datos
+    const nucleotidosDetectados = new Set();
+    const secuenciaADN = [];
 
     fs.createReadStream(archivo)
       .pipe(csv())
       .on("data", (row) => {
-        console.log("🔹 Fila leída del CSV:", row);
-
-        // 🔹 Extraer datos correctamente
-        const gen = row.gen ? row.gen.trim() : "Desconocido";
-        const mutacion = row.mutacion ? row.mutacion.trim() : "";
-        const posicion = row.posicion ? Number(row.posicion) : null;
-
-        if (gen && posicion !== null) {
-          secuenciaADN.push({
-            gen,
-            mutacion: mutacion !== "", // ✅ Indicar si hay mutación
-            posicion,
-            tipo_mutacion: row.tipo_mutacion || "Desconocido",
-            efecto: row.efecto || "Desconocido",
-          });
-
-          if (mutacion) {
-            mutacionesDetectadas.add(mutacion);
-            genesDetectados.add(gen);
+        try {
+          if (!row.posicion || !row.gen || !row.nucleotido || !row.mutacion) {
+            console.warn("⚠️ Fila inválida en el CSV, se omite:", row);
+            return;
           }
+
+          const gen = row.gen.trim();
+          const mutacion = row.mutacion.trim().toLowerCase(); // Normaliza a minúsculas
+          const nucleotido = row.nucleotido.trim();
+          const posicion = Number(row.posicion);
+
+          if (!isNaN(posicion)) {
+            const tieneMutacion = mutacion === "sí"; // Solo marcará true si es exactamente "Sí"
+            
+            secuenciaADN.push({
+              gen,
+              mutacion: tieneMutacion,
+              nucleotido,
+              posicion,
+              tipo_mutacion: row.tipo_mutacion || "Desconocido",
+              efecto: row.efecto || "Desconocido",
+            });
+
+            if (tieneMutacion) {
+              mutacionesDetectadas.add(mutacion);
+              genesDetectados.add(gen);
+            }
+            
+            nucleotidosDetectados.add(nucleotido);
+          }
+        } catch (err) {
+          console.error("⚠️ Error procesando fila del CSV:", err);
         }
       })
       .on("end", async () => {
-        console.log("✅ Secuencia de ADN procesada:", secuenciaADN);
+        try {
+          console.log("✅ Secuencia de ADN procesada correctamente.");
 
-        // 🔹 Obtener todas las enfermedades de la base de datos
-        const enfermedades = await EnfermedadModel.findAll();
-        let enfermedadDetectada = null;
+          // Obtener todas las enfermedades de la BD
+          const enfermedades = await EnfermedadModel.findAll();
+          let enfermedadesDetectadas = [];
 
-        let enfermedadesDetectadas = [];
+          for (let enfermedad of enfermedades) {
+            const genesEnfermedad = enfermedad.mutaciones_asociadas
+              ? enfermedad.mutaciones_asociadas.split(/,\s*/).map(m => m.trim().toUpperCase())
+              : [];
 
-      for (let enfermedad of enfermedades) {
-        // Normalizamos los genes de la enfermedad
-        const genesEnfermedad = enfermedad.mutaciones_asociadas
-          ? enfermedad.mutaciones_asociadas.split(/,\s*/).map(m => m.trim().toUpperCase())
-          : [];
+            const genesArchivo = [...genesDetectados].map(gen => gen.trim().toUpperCase());
 
-        // Normalizamos los genes detectados en el archivo
-        const genesArchivo = [...genesDetectados].map(gen => gen.trim().toUpperCase());
+            const coincidencias = genesArchivo.filter(gen => genesEnfermedad.includes(gen));
 
-        // Buscar coincidencias
-        const coincidencias = genesArchivo.filter(gen => genesEnfermedad.includes(gen));
+            if (coincidencias.length > 0) {
+              enfermedadesDetectadas.push(enfermedad.nombre);
+            }
+          }
 
-        if (coincidencias.length > 0) {
-          enfermedadesDetectadas.push(enfermedad.nombre); // 🔹 Guardar todas las coincidencias
+          const resultadoEnfermedades = enfermedadesDetectadas.length > 0
+            ? enfermedadesDetectadas.join(", ")
+            : "Sin coincidencias";
+
+          // Guardar el resultado en la BD
+          await AnalisisADNModel.update(
+            { enfermedad_detectada: resultadoEnfermedades },
+            { where: { id: nuevoAnalisis.id } }
+          );
+
+          console.log(`✅ Enfermedades detectadas: ${resultadoEnfermedades}`);
+
+          // Eliminar archivo CSV después del procesamiento
+          fs.unlink(archivo, (err) => {
+            if (err) {
+              console.error("⚠️ Error al eliminar archivo:", err);
+            } else {
+              console.log("🗑️ Archivo eliminado correctamente.");
+            }
+          });
+
+          // Enviar la respuesta
+          res.json({
+            mensaje: "Análisis completado",
+            enfermedad_detectada: resultadoEnfermedades,
+            mutaciones_detectadas: [...mutacionesDetectadas],
+            nucleotidos_detectados: [...nucleotidosDetectados],
+            secuenciaADN,
+          });
+
+        } catch (error) {
+          console.error("❌ Error al procesar enfermedades:", error);
+          res.status(500).json({ error: "Error en el análisis de ADN" });
         }
-      }
-
-      // 🔹 Si hay varias enfermedades detectadas, las mostramos todas
-      const resultadoEnfermedades = enfermedadesDetectadas.length > 0
-        ? enfermedadesDetectadas.join(", ")
-        : "Sin coincidencias";
-
-      // 🔹 Guardar en la BD
-      await AnalisisADNModel.update(
-        { enfermedad_detectada: resultadoEnfermedades },
-        { where: { id: nuevoAnalisis.id } }
-      );
-
-      console.log(`✅ Enfermedades detectadas: ${resultadoEnfermedades}`);
-
-
-        // 🔹 Enviar la respuesta con la secuencia procesada
-        res.json({
-          mensaje: "Análisis completado",
-          enfermedad_detectada: enfermedadesDetectadas.length > 0 ? enfermedadesDetectadas.join(", ") : "Ninguna",
-          mutaciones_detectadas: [...mutacionesDetectadas],
-          secuenciaADN, 
-        });
-        
+      })
+      .on("error", (err) => {
+        console.error("❌ Error al leer el archivo CSV:", err);
+        res.status(500).json({ error: "Error al procesar el archivo CSV" });
       });
+
   } catch (error) {
-    console.error("❌ Error al analizar el ADN:", error);
+    console.error("❌ Error general en el análisis de ADN:", error);
     res.status(500).json({ error: "Error en el análisis de ADN" });
   }
 };

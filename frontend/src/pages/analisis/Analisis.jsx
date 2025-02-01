@@ -1,9 +1,8 @@
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { subirArchivoADN, getPacienteById } from "../../api/analisi";
-import Grafico from "../grafico/Grafico"; 
+import Grafico from "../grafico/Grafico";
 import "../../styles/analisis.css";
-
 
 function AnalisisADN() {
   const navigate = useNavigate();
@@ -13,9 +12,9 @@ function AnalisisADN() {
   const [archivo, setArchivo] = useState(null);
   const [resultado, setResultado] = useState(null);
   const [cargando, setCargando] = useState(false);
-  const [dataADN, setDataADN] = useState([]); 
+  const [dataADN, setDataADN] = useState([]);
+  const [nucleotidos, setNucleotidos] = useState([]);
 
-  // Obtener los datos del paciente con su ID
   useEffect(() => {
     async function fetchPaciente() {
       if (!pacienteId) return;
@@ -57,11 +56,14 @@ function AnalisisADN() {
     setCargando(true);
     try {
       const data = await subirArchivoADN(archivo, pacienteId);
-      console.log("📢 Respuesta de la API:", data); // 🔥 Ver qué datos llegan al frontend
+      console.log("📢 Respuesta de la API:", data);
       setResultado(data);
 
       if (data.secuenciaADN) {
         setDataADN(data.secuenciaADN);
+      }
+      if (data.nucleotidos_detectados) {
+        setNucleotidos(data.nucleotidos_detectados);
       }
     } catch (error) {
       console.error("❌ Error al analizar el ADN:", error);
@@ -91,18 +93,16 @@ function AnalisisADN() {
         {resultado && (
           <div className="analisis-resultado">
             <h3>Resultados del Análisis:</h3>
-            {resultado && resultado.enfermedad_detectada ? (
+            {resultado.enfermedad_detectada ? (
               <p>{Array.isArray(resultado.enfermedad_detectada) ? resultado.enfermedad_detectada.join(", ") : resultado.enfermedad_detectada}</p>
             ) : (
               <p>No se detectaron enfermedades</p>
             )}
+            
+
           </div>
         )}
-
-        {/* 📌 Mostrar el gráfico después del análisis */}
         {dataADN.length > 0 && <Grafico data={dataADN} />}
-
-        {/* 🔙 Botón para regresar al módulo de pacientes */}
         <button onClick={() => navigate("/pacientes")} className="back-button">
           Regresar a Módulo Pacientes
         </button>

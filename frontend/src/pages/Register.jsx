@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import Swal from "sweetalert2"; 
 import "../styles/register.css";
 
 function Register() {
@@ -35,16 +36,34 @@ function Register() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage("Registro exitoso. Redirigiendo al login...");
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
+        // Muestra SweetAlert2 y redirige al login después de cerrarlo
+        Swal.fire({
+          title: "¡Registro Exitoso!",
+          text: "Tu cuenta ha sido creada correctamente. Ahora puedes iniciar sesión.",
+          icon: "success",
+          confirmButtonText: "Ir al Login"
+        }).then(() => {
+          navigate("/login"); // Redirige al usuario al login
+        });
+
       } else {
         setMessage(data.message || "Error al registrarse");
+        Swal.fire({
+          title: "Error",
+          text: data.message || "Error en el registro",
+          icon: "error",
+          confirmButtonText: "Aceptar"
+        });
       }
     } catch (error) {
       console.error("Error al registrarse:", error);
       setMessage("Error al conectarse con el servidor");
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo conectar con el servidor.",
+        icon: "error",
+        confirmButtonText: "Aceptar"
+      });
     }
   };
 
@@ -73,11 +92,12 @@ function Register() {
           <label>Teléfono:</label>
           <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} className="form-input" />
         </div>
+        <p className="login-link">
+        ¿Ya tienes una cuenta? <Link to="/login">Inicia sesión aquí</Link>
+        </p>
         <button type="submit" className="register-button2">Registrarse</button>
       </form>
-      <p className="login-link">
-        ¿Ya tienes una cuenta? <Link to="/login">Inicia sesión aquí</Link>
-      </p>
+      
     </div>
   );
 }

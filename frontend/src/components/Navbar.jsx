@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
+import Swal from "sweetalert2"; 
 import { AuthContext } from "../context/AuthContext";
 import "../index.css";
 
@@ -8,8 +9,28 @@ function Navbar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
-    navigate("/login");
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Tu sesión se cerrará y tendrás que volver a iniciar sesión.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, cerrar sesión",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout(); // Llama a la función de cierre de sesión
+        Swal.fire({
+          title: "Sesión cerrada",
+          text: "Has cerrado sesión correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar"
+        }).then(() => {
+          navigate("/login"); // Redirige al usuario al login después de la alerta
+        });
+      }
+    });
   };
 
   return (

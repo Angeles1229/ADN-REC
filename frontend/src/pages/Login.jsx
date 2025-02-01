@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"; // Importa el contexto
 import "../styles/login.css";
-
+import Swal from "sweetalert2";
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
@@ -27,13 +27,35 @@ function Login() {
       if (response.ok) {
         setMessage("Inicio de sesión exitoso");
         login(data.token); // Llama a la función login del contexto
-        navigate("/");
+
+        // Muestra SweetAlert2
+        Swal.fire({
+          title: "¡Éxito!",
+          text: "Has iniciado sesión correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar"
+        }).then(() => {
+          navigate("/"); // Redirige después de cerrar la alerta
+        });
+
       } else {
         setMessage(data.message || "Error en el inicio de sesión");
+        Swal.fire({
+          title: "Error",
+          text: data.message || "Error en el inicio de sesión",
+          icon: "error",
+          confirmButtonText: "Aceptar"
+        });
       }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       setMessage("Error al conectarse con el servidor");
+      Swal.fire({
+        title: "Error",
+        text: "No se pudo conectar con el servidor.",
+        icon: "error",
+        confirmButtonText: "Aceptar"
+      });
     }
   };
 

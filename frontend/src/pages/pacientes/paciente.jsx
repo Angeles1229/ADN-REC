@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2"; // Importa SweetAlert2
 import { getPacientesRequest, deletePaciente, updatePaciente, createPaciente } from "../../api/paciente";
 import PacienteForm from "./pacientesform";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import "../../styles/paciente.css";
-
 
 function Paciente() {
   const [pacientes, setPacientes] = useState([]);
@@ -12,20 +12,19 @@ function Paciente() {
   const [editingPaciente, setEditingPaciente] = useState(null);
   const [addingPaciente, setAddingPaciente] = useState(false);
   const [selectedPacienteForADN, setSelectedPacienteForADN] = useState(null);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadPacientes() {
       try {
         const response = await getPacientesRequest();
-        console.log("Pacientes cargados:", response);
         setPacientes(response);
         setFilteredPacientes(response);
       } catch (error) {
         console.error("Error al cargar los pacientes:", error);
       }
     }
-    
+
     loadPacientes();
   }, []);
 
@@ -38,20 +37,33 @@ function Paciente() {
     setFilteredPacientes(filtered);
   };
 
-  // Eliminar paciente
+  // Eliminar paciente con SweetAlert2
   const handleDelete = async (id) => {
-    try {
-      await deletePaciente(id);
-      setPacientes((prev) => prev.filter((paciente) => paciente.id !== id));
-      setFilteredPacientes((prev) =>
-        prev.filter((paciente) => paciente.id !== id)
-      );
-    } catch (error) {
-      console.error("Error al eliminar el paciente:", error);
-    }
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deletePaciente(id);
+          setPacientes((prev) => prev.filter((paciente) => paciente.id !== id));
+          setFilteredPacientes((prev) => prev.filter((paciente) => paciente.id !== id));
+
+          Swal.fire("Eliminado", "El paciente ha sido eliminado con éxito.", "success");
+        } catch (error) {
+          Swal.fire("Error", "No se pudo eliminar el paciente.", "error");
+        }
+      }
+    });
   };
 
-  // Actualizar paciente
+  // Actualizar paciente con SweetAlert2
   const handleUpdate = async (id, updatedData) => {
     try {
       const updatedPaciente = await updatePaciente(id, updatedData);
@@ -66,38 +78,40 @@ function Paciente() {
         )
       );
       setEditingPaciente(null);
+
+      Swal.fire({
+        title: "Paciente actualizado",
+        text: "Los datos han sido modificados correctamente.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
     } catch (error) {
-      console.error("Error al actualizar el paciente:", error);
+      Swal.fire("Error", "No se pudo actualizar el paciente.", "error");
     }
   };
 
-  // Agregar paciente
+  // Agregar paciente con SweetAlert2
   const handleAddPaciente = async (newPaciente) => {
     try {
-      console.log("📤 Intentando agregar paciente:", newPaciente);
       const addedPaciente = await createPaciente(newPaciente);
       setPacientes((prev) => [...prev, addedPaciente]);
       setFilteredPacientes((prev) => [...prev, addedPaciente]);
       setAddingPaciente(false);
-      console.log("✅ Paciente agregado correctamente:", addedPaciente);
+
+      Swal.fire({
+        title: "Paciente agregado",
+        text: "El paciente ha sido registrado correctamente.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
     } catch (error) {
-      console.error("❌ Error al agregar el paciente:", error);
+      Swal.fire("Error", "No se pudo agregar el paciente.", "error");
     }
   };
 
   // Seleccionar paciente para ingresar ADN
   const handleSelectPaciente = (paciente) => {
     navigate(`/analisis?paciente_id=${paciente.id}`);
-  };
-
-  // Guardar información de ADN (Ejemplo de función, puedes modificarla según el API)
-  const handleSaveADN = (e) => {
-    e.preventDefault();
-    const adnData = e.target.adn.value;
-    console.log(`ADN ingresado para ${selectedPacienteForADN.nombre}:`, adnData);
-
-    // Aquí podrías enviar los datos al backend si es necesario
-    setSelectedPacienteForADN(null); // Cerrar el formulario de ADN
   };
 
   return (
@@ -161,22 +175,9 @@ function Paciente() {
                 handleUpdate(editingPaciente.id, updatedData);
               }}
             >
-              <input
-                name="nombre"
-                defaultValue={editingPaciente.nombre}
-                placeholder="Nombre"
-              />
-              <input
-                name="apellido"
-                defaultValue={editingPaciente.apellido}
-                placeholder="Apellido"
-              />
-              <input
-                name="edad"
-                defaultValue={editingPaciente.edad}
-                placeholder="Edad"
-                type="number"
-              />
+              <input name="nombre" defaultValue={editingPaciente.nombre} placeholder="Nombre" />
+              <input name="apellido" defaultValue={editingPaciente.apellido} placeholder="Apellido" />
+              <input name="edad" defaultValue={editingPaciente.edad} placeholder="Edad" type="number" />
               <select name="genero" defaultValue={editingPaciente.genero}>
                 <option value="M">Masculino</option>
                 <option value="F">Femenino</option>
@@ -184,30 +185,11 @@ function Paciente() {
               </select>
               <div style={{ display: "flex", gap: "1rem" }}>
                 <button type="submit">Guardar</button>
-                <button className="cancel" onClick={() => setEditingPaciente(null)}>
-                  Cancelar
-                </button>
+                <button className="cancel" onClick={() => setEditingPaciente(null)}>Cancelar</button>
               </div>
             </form>
           </div>
         </>
-      )}
-
-      {selectedPacienteForADN && (
-        <div className="overlay">
-          <div className="edit-form-container">
-            <h2>Ingresar ADN para {selectedPacienteForADN.nombre}</h2>
-            <form onSubmit={handleSaveADN}>
-              <input name="adn" placeholder="Ingrese secuencia de ADN" required />
-              <div style={{ display: "flex", gap: "1rem" }}>
-                <button type="submit">Guardar</button>
-                <button className="cancel" onClick={() => setSelectedPacienteForADN(null)}>
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
       )}
     </div>
   );

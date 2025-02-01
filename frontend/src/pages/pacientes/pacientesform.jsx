@@ -1,11 +1,11 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom"; // Para redirigir después de guardar
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Importa SweetAlert2
 import "../../styles/formpaciente.css";
 
-
 function PacienteForm({ initialData, onSubmit }) {
-  const navigate = useNavigate(); // Para redirigir después de guardar
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
     nombre: Yup.string().required("El nombre es obligatorio"),
@@ -21,47 +21,69 @@ function PacienteForm({ initialData, onSubmit }) {
   return (
     <div className="modal-overlay">
       <div className="modal">
-      <Formik
-        initialValues={initialData}
-        validationSchema={validationSchema}
-        onSubmit={async (values, { setSubmitting, resetForm }) => {
-          setSubmitting(true);
+        <Formik
+          initialValues={initialData}
+          validationSchema={validationSchema}
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
+            setSubmitting(true);
 
-          const laboratoristaId = localStorage.getItem("laboratorista_id");
-          if (!laboratoristaId) {
-            alert("Error: No se encontró el laboratorista ID. Inicia sesión nuevamente.");
-            setSubmitting(false);
-            return;
-          }
-
-          const pacienteData = { ...values, laboratorista_id: laboratoristaId };
-          console.log("📩 Datos enviados al backend:", pacienteData); // ✅ Depuración
-
-          try {
-            const response = await fetch("http://localhost:4000/api/pacientes", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(pacienteData),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-              alert("Paciente agregado con éxito.");
-              resetForm();
-              navigate("/pacientes");
-            } else {
-              alert(`Error: ${data.message || "No se pudo agregar el paciente."}`);
+            const laboratoristaId = localStorage.getItem("laboratorista_id");
+            if (!laboratoristaId) {
+              Swal.fire({
+                title: "Error",
+                text: "No se encontró el ID del laboratorista. Inicia sesión nuevamente.",
+                icon: "error",
+                confirmButtonText: "Aceptar",
+              });
+              setSubmitting(false);
+              return;
             }
-          } catch (error) {
-            console.error("❌ Error en la solicitud:", error);
-            alert("Error de conexión con el servidor.");
-          }
 
-          setSubmitting(false);
-        }}
-      >
+            const pacienteData = { ...values, laboratorista_id: laboratoristaId };
+            console.log("📩 Datos enviados al backend:", pacienteData); // ✅ Depuración
 
+            try {
+              const response = await fetch("http://localhost:4000/api/pacientes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(pacienteData),
+              });
+
+              const data = await response.json();
+
+              if (response.ok) {
+                // Muestra SweetAlert2 y redirige después de aceptar
+                Swal.fire({
+                  title: "Paciente agregado",
+                  text: "El paciente ha sido registrado exitosamente.",
+                  icon: "success",
+                  confirmButtonText: "Aceptar"
+                }).then(() => {
+                  resetForm();
+                  window.location.reload(); // 🔄 Recargar la página completamente
+                });
+
+              } else {
+                Swal.fire({
+                  title: "Error",
+                  text: data.message || "No se pudo agregar el paciente.",
+                  icon: "error",
+                  confirmButtonText: "Aceptar"
+                });
+              }
+            } catch (error) {
+              console.error("❌ Error en la solicitud:", error);
+              Swal.fire({
+                title: "Error",
+                text: "Error de conexión con el servidor.",
+                icon: "error",
+                confirmButtonText: "Aceptar"
+              });
+            }
+
+            setSubmitting(false);
+          }}
+        >
           {({ isSubmitting }) => (
             <Form className="form-container">
               <h2>Agregar Paciente</h2>
