@@ -68,17 +68,38 @@ function AnalisisADN() {
 
   const handleDownloadPDF = () => {
     const input = pdfRef.current;
-    html2canvas(input, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 190;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      pdf.text("Informe de Análisis de ADN", 10, 10);
-      pdf.addImage(imgData, "PNG", 10, 20, imgWidth, imgHeight);
-      pdf.save(`Informe_ADN_${paciente?.nombre}.pdf`);
+    html2canvas(input, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgWidth = 190;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.text("Informe de Análisis de ADN", 10, 10);
+        pdf.addImage(imgData, "PNG", 10, 20, imgWidth, imgHeight);
+
+        // Verificar si hay datos en la tabla CSV
+        if (tablaCSV.length > 0) {
+            pdf.addPage();  // Agregar una nueva página para la tabla
+            pdf.text("Datos del Archivo CSV", 10, 10);
+
+            const headers = [Object.keys(tablaCSV[0])]; // Extraer encabezados
+            const data = tablaCSV.map(row => Object.values(row)); // Extraer valores
+
+            pdf.autoTable({
+                startY: 20,
+                head: headers,
+                body: data,
+                theme: "grid",
+                styles: { fontSize: 10, cellWidth: "wrap" },
+                headStyles: { fillColor: [22, 160, 133] }
+            });
+        }
+
+        pdf.save(`Informe_ADN_${paciente?.nombre}.pdf`);
     });
-  };
+};
+
 
   return (
     <div className="bodye">
