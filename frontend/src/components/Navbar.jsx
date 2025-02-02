@@ -59,7 +59,7 @@ function Navbar() {
         ) : (
           <>
             <Link to="/login" className="button login-button">Login</Link>
-            <Link to="/register" className="button register-button">Registrarse</Link>
+            <Link to="/register" className="button register-button">Register</Link>
           </>
         )}
       </div>

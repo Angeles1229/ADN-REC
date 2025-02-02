@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "../styles/home.css"; 
+import "../styles/home.css";
 
 function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -8,29 +8,25 @@ function Home() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("🔍 Token almacenado en localStorage:", token); // 🔴 Verifica el token
-  
     setIsAuthenticated(!!token);
-  
+
     if (token) {
-      fetch("http://localhost:4000/api/laboratoristas/perfil", { 
-        headers: { Authorization: `Bearer ${token}` }
+      fetch("http://localhost:4000/api/laboratoristas/perfil", {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("🔍 Datos recibidos del backend:", data); // 🔴 Verifica la respuesta del backend
-        if (data.nombre) {
-          setLaboratorista(`${data.nombre} ${data.apellido}`);
-        }
-      })
-      .catch((err) => console.error("❌ Error al obtener el perfil:", err));
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.nombre) {
+            setLaboratorista(`${data.nombre} ${data.apellido}`);
+          }
+        })
+        .catch((err) => console.error("❌ Error al obtener el perfil:", err));
     }
   }, []);
-  
-  
 
   return (
     <div className="home-container">
+      {/* Hero Section con Efectos */}
       <div className="hero-section">
         <h1 className="hero-title">
           Bienvenido {laboratorista ? laboratorista : ""} a <span>ADN-REC</span>
@@ -42,6 +38,8 @@ function Home() {
           {isAuthenticated ? "Ir a Pacientes" : "Comenzar ahora"}
         </Link>
       </div>
+
+      {/* Sección de Características */}
       <div className="features-section">
         <h2 className="features-title">¿Qué puedes hacer aquí?</h2>
         <div className="features-grid">

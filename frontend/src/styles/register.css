@@ -1,97 +1,145 @@
-/* Contenedor principal */
+/* Contenedor principal con animación de entrada */
 .bodyRegister {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Mueve el contenido hacia la parte superior */
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(135deg, #6b6e72, #35435c); /* Fondo gradiente */
-    margin: 0;
-    padding: 1rem;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #6b6e72, #35435c);
+  margin: 0;
+  padding: 1rem;
+  box-sizing: border-box;
+  padding-top: 5rem;
+
+  /* Animación de entrada */
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+/* Animación de Fade In */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(-20px);
   }
-  
-  /* Título */
-  .register-title {
-    color: #ffffff;
-    font-size: 2rem;
-    margin-bottom: 1rem;
+  to {
+      opacity: 1;
+      transform: translateY(0);
   }
-  
-  /* Mensaje de error o éxito */
-  .register-message {
-    font-size: 1rem;
-    color: #e74c3c; /* Rojo para mensajes de error */
-    margin-bottom: 1rem;
-    text-align: center;
+}
+
+/* Título */
+.register-title {
+  color: #ffffff;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  animation: slideIn 1.2s ease-in-out forwards;
+}
+
+/* Animación para el título */
+@keyframes slideIn {
+  from {
+      opacity: 0;
+      transform: scale(0.9);
   }
-  
-  /* Formulario */
-  .register-form {
-    background-color: #ffffff;
-    padding: 1.2rem; /* Reducir ligeramente el padding */
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    width: 100%;
-    max-width: 400px;
-    margin-top: 3rem; /* Espaciado adicional desde arriba */
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem; /* Reduce ligeramente el espacio entre los elementos */
+  to {
+      opacity: 1;
+      transform: scale(1);
   }
-  
-  /* Etiquetas */
-  .form-group label {
-    font-size: 0.9rem;
-    color: #333333;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-  
-  /* Inputs */
-  .form-group .form-input {
-    width: 100%;
-    padding: 0.4rem;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    font-size: 1rem;
-    box-sizing: border-box;
-  }
-  
-  /* Botón */
-  .register-button2 {
-    background-color: #065176cf; /* Azul moderno */
-    color: #ffffff;
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 25px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  .register-button2:hover {
-    background-color: #2d343b; /* Cambia a un color más claro al pasar el cursor */
-    transform: scale(1.05);
-  }
-  
-  /* Enlace al login */
-  .login-link {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    text-align: center;
-    color: #ee3838;
-  }
-  
-  .login-link a {
-    color: #4e54c8;
-    font-weight: bold;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  
-  .login-link a:hover {
-    color: #8f94fb; /* Cambia a un color más claro al pasar el cursor */
-  }
-  
+}
+
+/* Formulario */
+.register-form {
+  background-color: #ffffff;
+  padding: 1.2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 400px;
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Efecto hover en el formulario */
+.register-form:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Etiquetas */
+.form-group label {
+  font-size: 0.9rem;
+  color: #333333;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Inputs con animación en focus */
+.form-group .form-input {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Efecto al hacer focus en el input */
+.form-group .form-input:focus {
+  border-color: #065176cf;
+  box-shadow: 0 0 8px rgba(6, 81, 118, 0.5);
+  outline: none;
+}
+
+/* Botón con animación */
+.register-button2 {
+  background-color: #065176cf;
+  color: #ffffff;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s ease-in-out, box-shadow 0.3s;
+}
+
+/* Efecto hover en el botón */
+.register-button2:hover {
+  background-color: #2d343b;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Mensaje de error o éxito */
+.register-message {
+  font-size: 1rem;
+  color: #e74c3c;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Enlace al login */
+.login-link {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  color: #ee3838;
+}
+
+/* Animación en los enlaces */
+.login-link a {
+  color: #4e54c8;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.login-link a:hover {
+  color: #8f94fb;
+}
