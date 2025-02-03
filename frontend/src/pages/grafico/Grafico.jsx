@@ -40,54 +40,80 @@ function Grafico({ data }) {
         .style("box-shadow", "0px 0px 10px rgba(0, 0, 0, 0.5)")
         .style("font-size", "14px")
         .style("opacity", 0);
+        const waveSpeed = 800; // Más bajo = más rápido, más alto = más lento
+        const waveAmplitude = 10; // Altura de la onda
 
-      data.forEach((d, i) => {
-        const x = i * xSpacing;
-        const y1 = Math.sin(i * 0.3) * curveHeight - helixSpacing;
-        const y2 = Math.sin(i * 0.3) * curveHeight + helixSpacing;
+        data.forEach((d, i) => {
+          const x = i * xSpacing;
+          const y1 = Math.sin(i * 0.3) * curveHeight - helixSpacing;
+          const y2 = Math.sin(i * 0.3) * curveHeight + helixSpacing;
 
-        const nucleotido = d["nucleotido"] ? d["nucleotido"].trim().toUpperCase() : "";
-        const isMutated = d["mutacion"] === true;
+          const nucleotido = d["nucleotido"] ? d["nucleotido"].trim().toUpperCase() : "";
+          const isMutated = d["mutacion"] === true;
 
-        const baseColor = colors[nucleotido] || "#999";
-        const mutationColor = colors.mutacion;
+          const baseColor = colors[nucleotido] || "#999";
+          const mutationColor = colors.mutacion;
 
-        const circles = [
-          { cx: x, cy: y1 },
-          { cx: x, cy: y2 }
-        ];
+          const circles = [
+            { cx: x, cy: y1 },
+            { cx: x, cy: y2 }
+          ];
 
-        circles.forEach(({ cx, cy }) => {
-          g.append("circle")
-            .attr("cx", cx)
-            .attr("cy", cy)
-            .attr("r", radius)
-            .attr("fill", isMutated ? mutationColor : baseColor)
-            .attr("opacity", 0.8)
-            .on("mouseover", function (event) {
-              d3.select(this).transition().duration(200).attr("r", radius * 1.5);
-              tooltip.style("opacity", 1)
-                .html(`Nucleótido: ${nucleotido}<br>Posición: ${d.posicion}<br>Mutación: ${isMutated ? "Sí" : "No"}`)
-                .style("left", event.pageX + 15 + "px")
-                .style("top", event.pageY - 25 + "px");
-            })
-            .on("mousemove", function (event) {
-              tooltip.style("left", event.pageX + 15 + "px")
-                     .style("top", event.pageY - 25 + "px");
-            })
-            .on("mouseout", function () {
-              d3.select(this).transition().duration(200).attr("r", radius);
-              tooltip.style("opacity", 0);
-            });
+          circles.forEach(({ cx, cy }, index) => {
+            const circle = g.append("circle")
+              .attr("cx", cx)
+              .attr("cy", cy)
+              .attr("r", radius)
+              .attr("fill", isMutated ? mutationColor : baseColor)
+              .attr("opacity", 0.8);
+
+            // Función para animar la ola sin que se detenga al pasar el mouse
+            function animateWave() {
+              circle.transition()
+                .duration(1500)
+                .ease(d3.easeSinInOut)
+                .attr("cy", cy + Math.sin(Date.now() / waveSpeed + index * 0.5) * waveAmplitude)
+                .on("end", animateWave); // Repite la animación
+            }
+
+            animateWave();
+
+            // Eventos de interacción sin interrumpir la animación
+            circle
+              .on("mouseover", function (event) {
+                d3.select(this)
+                  .transition()
+                  .duration(200)
+                  .attr("r", radius * 1.5);
+
+                tooltip.style("opacity", 1)
+                  .html(`Nucleótido: ${nucleotido}<br>Posición: ${d.posicion}<br>Mutación: ${isMutated ? "Sí" : "No"}`)
+                  .style("left", event.pageX + 15 + "px")
+                  .style("top", event.pageY - 25 + "px");
+              })
+              .on("mousemove", function (event) {
+                tooltip.style("left", event.pageX + 15 + "px")
+                      .style("top", event.pageY - 25 + "px");
+              })
+              .on("mouseout", function () {
+                d3.select(this)
+                  .transition()
+                  .duration(200)
+                  .attr("r", radius);
+                
+                tooltip.style("opacity", 0);
+              });
+          });
+
+          // Línea curva entre los círculos
+          g.append("path")
+            .attr("d", `M ${x},${y1} Q ${x + radius},${(y1 + y2) / 2} ${x},${y2}`)
+            .attr("stroke", "#666")
+            .attr("fill", "none")
+            .attr("stroke-width", 2)
+            .attr("stroke-opacity", 0.8);
         });
-
-        g.append("path")
-          .attr("d", `M ${x},${y1} Q ${x + radius},${(y1 + y2) / 2} ${x},${y2}`)
-          .attr("stroke", "#666")
-          .attr("fill", "none")
-          .attr("stroke-width", 2)
-          .attr("stroke-opacity", 0.8);
-      });
+ 
     }
   }, [data]);
 
