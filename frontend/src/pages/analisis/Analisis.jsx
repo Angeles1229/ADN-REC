@@ -75,8 +75,19 @@ function AnalisisADN() {
         const imgWidth = 190;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
+        // Encabezado del informe con datos del paciente y fecha
         pdf.text("Informe de Análisis de ADN", 10, 10);
-        pdf.addImage(imgData, "PNG", 10, 20, imgWidth, imgHeight);
+        pdf.text(`Paciente: ${paciente?.nombre} ${paciente?.apellido}`, 10, 20);
+        
+        // Obtener la fecha actual
+        const fechaSubida = new Date().toLocaleDateString("es-ES", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        });
+
+        pdf.text(`Fecha de subida: ${fechaSubida}`, 10, 30);
+        pdf.addImage(imgData, "PNG", 10, 40, imgWidth, imgHeight);
 
         // Verificar si hay datos en la tabla CSV
         if (tablaCSV.length > 0) {
@@ -98,7 +109,7 @@ function AnalisisADN() {
 
         pdf.save(`Informe_ADN_${paciente?.nombre}.pdf`);
     });
-};
+  };
 
 
   return (
