@@ -46,5 +46,13 @@ El proyecto sigue una arquitectura **cliente-servidor**, separando el **frontend
 💡 **Este sistema representa un gran avance en la bioinformática y el diagnóstico clínico!**  
 
 ---
+## 🚀 Instalación de proyecto:
+1. Ingresar a las carpetas :
+  cd backend
+  cd fronted
+2. En ambas terminales se debe instalar las dependencias 
+  npm install
+3. En ambas terminales el proyecto ejecuta con npm run dev
+   
 📌 **¡Colaboradores bienvenidos!** Si quieres contribuir, revisa la documentación y envía tus sugerencias.  
 ✉️ **Contacto:** https://www.linkedin.com/in/angeles-nahomi-valdospin-alvarez-b77008297?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app  
