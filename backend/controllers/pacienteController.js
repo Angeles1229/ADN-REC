@@ -28,7 +28,7 @@ export const getPacientes = async (req, res) => {
 // 🔹 Obtener un paciente por ID (validando que pertenezca al laboratorista)
 export const getPaciente = async (req, res) => {
   const { id } = req.params;
-  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); // ⬅️ Obtener desde headers
+  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); // ⬅ Obtener desde headers
 
   try {
     const paciente = await PacienteModel.findOne({
@@ -51,22 +51,22 @@ export const createPaciente = async (req, res) => {
     console.log("📩 Datos recibidos en createPaciente:", req.body);
 
     const { nombre, apellido, edad, genero, laboratorista_id } = req.body;
-    const laboratoristaID = parseInt(laboratorista_id); // ⬅️ Ahora lo toma del body
+    const laboratoristaID = parseInt(laboratorista_id); // ⬅ Ahora lo toma del body
 
-    // 1️⃣ **Validar datos obligatorios**
+    // 1️⃣ *Validar datos obligatorios*
     if (!nombre || !apellido || !edad || !genero || !laboratoristaID) {
       console.error("❌ Faltan datos obligatorios:", { nombre, apellido, edad, genero, laboratoristaID });
       return res.status(400).json({ message: "Faltan datos obligatorios." });
     }
 
-    // 2️⃣ **Verificar si el laboratorista existe**
+    // 2️⃣ *Verificar si el laboratorista existe*
     const laboratorista = await LaboratoristaModel.findByPk(laboratoristaID);
     if (!laboratorista) {
       console.error("❌ Laboratorista no encontrado:", laboratoristaID);
       return res.status(404).json({ message: "Laboratorista no encontrado." });
     }
 
-    // 3️⃣ **Crear el paciente**
+    // 3️⃣ *Crear el paciente*
     const paciente = await PacienteModel.create({
       nombre,
       apellido,
@@ -88,7 +88,7 @@ export const createPaciente = async (req, res) => {
 export const updatePaciente = async (req, res) => {
   const { id } = req.params;
   const { nombre, apellido, edad, genero } = req.body;
-  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); // ⬅️ Obtener desde headers
+  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); // ⬅ Obtener desde headers
 
   try {
     const paciente = await PacienteModel.findOne({
@@ -109,7 +109,7 @@ export const updatePaciente = async (req, res) => {
 // 🔹 Eliminar un paciente (solo si pertenece al laboratorista autenticado)
 export const deletePaciente = async (req, res) => {
   const { id } = req.params;
-  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); // ⬅️ Obtener desde headers
+  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); // ⬅ Obtener desde headers
 
   try {
     const paciente = await PacienteModel.findOne({

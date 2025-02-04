@@ -1,8 +1,9 @@
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { subirArchivoADN, getPacienteById } from "../../api/analisi";
 import Grafico from "../grafico/Grafico";
 import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 import "../../styles/analisis.css";
 
@@ -18,19 +19,32 @@ function AnalisisADN() {
   const [nucleotidos, setNucleotidos] = useState([]);
   const [tablaCSV, setTablaCSV] = useState([]);
   const pdfRef = useRef();
+  const [pdfListo, setPdfListo] = useState(false);
 
   useEffect(() => {
     async function fetchPaciente() {
-      if (!pacienteId) return;
+      if (!pacienteId) {
+        console.error("❌ pacienteId no encontrado en la URL.");
+        return;
+      }
       try {
         const data = await getPacienteById(pacienteId);
+        console.log("✅ Datos del paciente recibidos:", data);
         setPaciente(data);
       } catch (error) {
-        console.error("Error al obtener el paciente:", error);
+        console.error("❌ Error al obtener el paciente:", error);
       }
     }
     fetchPaciente();
   }, [pacienteId]);
+
+  // 🔹 Este efecto se ejecutará cuando resultado cambie y actualizará pdfListo
+  useEffect(() => {
+    if (resultado && paciente) {
+      console.log("✅ Datos listos, habilitando PDF.");
+      setPdfListo(true);
+    }
+  }, [resultado, paciente]);
 
   const handleFileChange = (e) => {
     setArchivo(e.target.files[0]);
@@ -58,6 +72,11 @@ function AnalisisADN() {
       if (data.tablaCSV) {
         setTablaCSV(data.tablaCSV);
       }
+
+      setTimeout(() => {
+        console.log("✅ Forzando render para habilitar PDF...");
+        setPdfListo(true);
+      }, 500);
     } catch (error) {
       console.error("❌ Error al analizar el ADN:", error);
       setResultado({ mensaje: "Error al analizar el ADN. Intenta nuevamente." });
@@ -66,58 +85,71 @@ function AnalisisADN() {
     }
   };
 
-  const handleDownloadPDF = () => {
-    const input = pdfRef.current;
+  const handleDownloadPDF = async () => {
+    console.log("📌 Intentando generar PDF...");
 
-    html2canvas(input, { scale: 2 }).then((canvas) => {
+    if (!pdfRef.current) {
+      console.error("❌ No se encontró el contenido a capturar para el PDF.");
+      alert("No hay datos para generar el informe.");
+      return;
+    }
+
+    if (!resultado || !paciente) {
+      alert("Los datos del paciente o el análisis aún no están disponibles.");
+      return;
+    }
+
+    setTimeout(() => {
+      console.log("📸 Capturando contenido para PDF...");
+      html2canvas(pdfRef.current, { scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "mm", "a4");
         const imgWidth = 190;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        // Encabezado del informe con datos del paciente y fecha
         pdf.text("Informe de Análisis de ADN", 10, 10);
-        pdf.text(`Paciente: ${paciente?.nombre} ${paciente?.apellido}`, 10, 20);
-        
-        // Obtener la fecha actual
+        pdf.text(`Paciente: ${paciente.nombre} ${paciente.apellido}`, 10, 20);
+
         const fechaSubida = new Date().toLocaleDateString("es-ES", {
-            year: "numeric",
-            month: "long",
-            day: "numeric"
+          year: "numeric",
+          month: "long",
+          day: "numeric"
         });
 
         pdf.text(`Fecha de subida: ${fechaSubida}`, 10, 30);
         pdf.addImage(imgData, "PNG", 10, 40, imgWidth, imgHeight);
 
-        // Verificar si hay datos en la tabla CSV
         if (tablaCSV.length > 0) {
-            pdf.addPage();  // Agregar una nueva página para la tabla
-            pdf.text("Datos del Archivo CSV", 10, 10);
+          pdf.addPage();
+          pdf.text("Datos del Archivo CSV", 10, 10);
 
-            const headers = [Object.keys(tablaCSV[0])]; // Extraer encabezados
-            const data = tablaCSV.map(row => Object.values(row)); // Extraer valores
+          const headers = [Object.keys(tablaCSV[0])];
+          const data = tablaCSV.map(row => Object.values(row));
 
-            pdf.autoTable({
-                startY: 20,
-                head: headers,
-                body: data,
-                theme: "grid",
-                styles: { fontSize: 10, cellWidth: "wrap" },
-                headStyles: { fillColor: [22, 160, 133] }
-            });
+          autoTable(pdf, {
+            startY: 20,
+            head: headers,
+            body: data,
+            theme: "grid",
+            styles: { fontSize: 10, cellWidth: "wrap" },
+            headStyles: { fillColor: [22, 160, 133] }
+          });
         }
 
-        pdf.save(`Informe_ADN_${paciente?.nombre}.pdf`);
-    });
+        pdf.save(`Informe_ADN_${paciente.nombre}.pdf`);
+        console.log("✅ PDF generado correctamente.");
+      }).catch(error => {
+        console.error("❌ Error al generar el PDF:", error);
+      });
+    }, 500);
   };
-
 
   return (
     <div className="bodye">
       <div className="analisis-container">
         <h1>Análisis de ADN</h1>
         {paciente ? (
-          <h2>
+          <h2 style={{ color: "blue" }}>
             Paciente: {paciente.nombre} {paciente.apellido}
           </h2>
         ) : (
@@ -149,35 +181,11 @@ function AnalisisADN() {
             </div>
           )}
 
-          {tablaCSV.length > 0 && (
-            <div className="tabla-container">
-              <h3>Datos del Archivo CSV</h3>
-              <table border="1" cellPadding="5">
-                <thead>
-                  <tr>
-                    {Object.keys(tablaCSV[0]).map((key) => (
-                      <th key={key}>{key}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {tablaCSV.map((fila, index) => (
-                    <tr key={index}>
-                      {Object.values(fila).map((valor, idx) => (
-                        <td key={idx}>{valor}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-
           {dataADN.length > 0 && <Grafico data={dataADN} />}
         </div>
 
-        <button className="pdf-button" onClick={handleDownloadPDF}>
-          Guardar Informe en PDF
+        <button className="pdf-button" onClick={handleDownloadPDF} disabled={!pdfListo}>
+          {pdfListo ? "Guardar Informe en PDF" : "Generando PDF..."}
         </button>
 
         <button onClick={() => navigate("/pacientes")} className="back-button">
