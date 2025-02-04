@@ -52,43 +52,51 @@ function Paciente() {
       if (result.isConfirmed) {
         try {
           await deletePaciente(id);
-          setPacientes((prev) => prev.filter((paciente) => paciente.id !== id));
-          setFilteredPacientes((prev) => prev.filter((paciente) => paciente.id !== id));
-
+  
+          // 🔄 Vuelve a cargar la lista de pacientes después de eliminar
+          const updatedPacientes = await getPacientesRequest();
+          setPacientes(updatedPacientes);
+          setFilteredPacientes(updatedPacientes);
+  
           Swal.fire("Eliminado", "El paciente ha sido eliminado con éxito.", "success");
         } catch (error) {
-          Swal.fire("Error", "No se pudo eliminar el paciente.", "error");
+          console.error("❌ Error al eliminar el paciente:", error);
+  
+          const errorMessage = error.response?.data?.message || "No se pudo eliminar el paciente.";
+          Swal.fire("Error", errorMessage, "error");
         }
       }
     });
   };
+  
+  
 
   // Actualizar paciente con SweetAlert2
   const handleUpdate = async (id, updatedData) => {
+    console.log("Datos enviados a la API:", updatedData); // 🔍 Verifica qué se está enviando
     try {
-      const updatedPaciente = await updatePaciente(id, updatedData);
-      setPacientes((prev) =>
-        prev.map((paciente) =>
-          paciente.id === id ? { ...paciente, ...updatedPaciente } : paciente
-        )
-      );
-      setFilteredPacientes((prev) =>
-        prev.map((paciente) =>
-          paciente.id === id ? { ...paciente, ...updatedPaciente } : paciente
-        )
-      );
-      setEditingPaciente(null);
+        await updatePaciente(id, updatedData);
 
-      Swal.fire({
-        title: "Paciente actualizado",
-        text: "Los datos han sido modificados correctamente.",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-      });
+        // 🔄 Vuelve a cargar la lista de pacientes después de la actualización
+        const updatedPacientes = await getPacientesRequest();
+        setPacientes(updatedPacientes);
+        setFilteredPacientes(updatedPacientes);
+
+        setEditingPaciente(null);
+
+        Swal.fire({
+            title: "Paciente actualizado",
+            text: "Los datos han sido modificados correctamente.",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+        });
     } catch (error) {
-      Swal.fire("Error", "No se pudo actualizar el paciente.", "error");
+        console.error("Error al actualizar el paciente:", error);
+        Swal.fire("Error", "No se pudo actualizar el paciente.", "error");
     }
-  };
+};
+
+
 
   // Agregar paciente con SweetAlert2
   const handleAddPaciente = async (newPaciente) => {

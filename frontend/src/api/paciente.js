@@ -61,22 +61,50 @@ export const createPaciente = async (paciente) => {
 
 
 // Actualizar un paciente
-export const updatePaciente = async (id, paciente) => {
+export const updatePaciente = async (id, data) => {
   try {
-    const response = await axios.put(`${API_URL}/${id}`, paciente);
-    return response.data;
+      const response = await fetch(`http://localhost:4000/api/pacientes/${id}`, {
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+          throw new Error(`Error en la actualización: ${response.statusText}`);
+      }
+
+      return await response.json();
   } catch (error) {
-    console.error("Error al actualizar el paciente:", error.response?.data || error.message);
-    throw error;
+      console.error("Error en updatePaciente:", error);
+      throw error;
   }
 };
+
 
 // Eliminar un paciente
 export const deletePaciente = async (id) => {
   try {
-    await axios.delete(`${API_URL}/${id}`);
+    const token = localStorage.getItem("token"); 
+    const laboratoristaId = localStorage.getItem("laboratorista_id"); 
+
+    if (!laboratoristaId) {
+      console.error("❌ No se encontró el laboratorista_id en localStorage");
+      throw new Error("ID del laboratorista no válido.");
+    }
+
+    await axios.delete(`http://localhost:4000/api/pacientes/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        laboratorista_id: laboratoristaId, // ✅ Asegurar que se envía
+      },
+    });
+
+    console.log(`✅ Paciente con ID ${id} eliminado correctamente.`);
   } catch (error) {
-    console.error("Error al eliminar el paciente:", error.response?.data || error.message);
+    console.error("❌ Error al eliminar el paciente:", error.response?.data || error);
     throw error;
   }
 };
+

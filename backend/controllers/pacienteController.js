@@ -97,30 +97,45 @@ export const createPaciente = async (req, res) => {
 
 // 🔹 Actualizar un paciente (solo si pertenece al laboratorista autenticado)
 export const updatePaciente = async (req, res) => {
-  const { id } = req.params;
-  const { nombre, apellido, edad, genero } = req.body;
-  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); // ⬅ Obtener desde headers
-
   try {
-    const paciente = await PacienteModel.findOne({
-      where: { id, laboratorista_id: laboratoristaID },
-    });
+      const { id } = req.params;
+      const { nombre, apellido, edad, genero } = req.body;
 
-    if (!paciente) {
-      return res.status(404).json({ message: "Paciente no encontrado o no autorizado." });
-    }
+      console.log("Datos recibidos para actualizar:", req.body);
 
-    await paciente.update({ nombre, apellido, edad, genero });
-    res.json(paciente);
+      // Verificar si el paciente existe antes de actualizar
+      const paciente = await PacienteModel.findByPk(id);
+      if (!paciente) {
+          return res.status(404).json({ message: "Paciente no encontrado" });
+      }
+
+      // Validar que los datos requeridos están presentes
+      if (!nombre || !apellido || !edad || !genero) {
+          return res.status(400).json({ message: "Todos los campos son obligatorios" });
+      }
+
+      // Actualizar el paciente
+      await paciente.update({ nombre, apellido, edad, genero });
+
+      res.json({ message: "Paciente actualizado correctamente", paciente });
   } catch (error) {
-    res.status(500).json({ message: "Error al actualizar el paciente", error });
+      console.error("Error en updatePaciente:", error);
+      res.status(500).json({ message: "Error interno del servidor", error: error.message });
   }
 };
+
 
 // 🔹 Eliminar un paciente (solo si pertenece al laboratorista autenticado)
 export const deletePaciente = async (req, res) => {
   const { id } = req.params;
-  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); // ⬅ Obtener desde headers
+  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); 
+
+  console.log("📥 Headers recibidos en deletePaciente:", req.headers);
+
+  if (!laboratoristaID || isNaN(laboratoristaID)) {
+    console.error("❌ ID del laboratorista no válido:", laboratoristaID);
+    return res.status(400).json({ message: "❌ ID del laboratorista no válido." });
+  }
 
   try {
     const paciente = await PacienteModel.findOne({
@@ -128,12 +143,16 @@ export const deletePaciente = async (req, res) => {
     });
 
     if (!paciente) {
-      return res.status(404).json({ message: "Paciente no encontrado o no autorizado." });
+      return res.status(404).json({ message: "❌ Paciente no encontrado o no autorizado." });
     }
 
     await paciente.destroy();
+    console.log(`✅ Paciente con ID: ${id} eliminado correctamente.`);
+
     res.json({ message: "Paciente eliminado correctamente" });
   } catch (error) {
-    res.status(500).json({ message: "Error al eliminar el paciente", error });
+    console.error("❌ Error al eliminar el paciente:", error);
+    res.status(500).json({ message: "Error interno del servidor", error });
   }
 };
+
