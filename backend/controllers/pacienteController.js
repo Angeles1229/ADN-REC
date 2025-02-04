@@ -26,22 +26,33 @@ export const getPacientes = async (req, res) => {
 
 
 // 🔹 Obtener un paciente por ID (validando que pertenezca al laboratorista)
+// 🔹 Obtener un paciente por ID con validación extra
 export const getPaciente = async (req, res) => {
   const { id } = req.params;
-  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); // ⬅ Obtener desde headers
+  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); 
+
+  // 🔍 Validar si el ID del paciente y el laboratorista son correctos
+  if (!id || isNaN(id)) {
+      return res.status(400).json({ message: "❌ ID del paciente no válido." });
+  }
+
+  if (!laboratoristaID || isNaN(laboratoristaID)) {
+      return res.status(400).json({ message: "❌ ID del laboratorista no válido." });
+  }
 
   try {
-    const paciente = await PacienteModel.findOne({
-      where: { id, laboratorista_id: laboratoristaID },
-    });
+      const paciente = await PacienteModel.findOne({
+          where: { id, laboratorista_id: laboratoristaID },
+      });
 
-    if (!paciente) {
-      return res.status(404).json({ message: "Paciente no encontrado o no autorizado." });
-    }
+      if (!paciente) {
+          return res.status(404).json({ message: "❌ Paciente no encontrado o no autorizado." });
+      }
 
-    res.json(paciente);
+      res.json(paciente);
   } catch (error) {
-    res.status(500).json({ message: "Error al obtener el paciente", error });
+      console.error("❌ Error en getPaciente:", error);
+      res.status(500).json({ message: "Error interno al obtener el paciente.", error });
   }
 };
 

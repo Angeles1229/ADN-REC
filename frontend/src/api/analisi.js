@@ -6,13 +6,21 @@ const API_PACIENTES_URL = "http://localhost:4000/api/pacientes"; // ✅ Nueva UR
 // 🔹 Obtener los datos de un paciente por ID
 export const getPacienteById = async (id) => {
     try {
-        const response = await axios.get(`${API_PACIENTES_URL}/${id}`);
+        const laboratorista_id = localStorage.getItem("laboratorista_id"); // Obtener desde almacenamiento
+        if (!laboratorista_id) {
+            throw new Error("No se encontró laboratorista_id en el almacenamiento.");
+        }
+
+        const response = await axios.get(`${API_PACIENTES_URL}/${id}`, {
+            headers: { "laboratorista_id": laboratorista_id }
+        });
         return response.data;
     } catch (error) {
-        console.error(`Error al obtener el paciente con ID ${id}:`, error);
+        console.error(`❌ Error al obtener el paciente con ID ${id}:`, error);
         throw error;
     }
 };
+
 
 // 🔹 Subir archivo CSV para análisis de ADN
 export const subirArchivoADN = async (file, paciente_id) => {

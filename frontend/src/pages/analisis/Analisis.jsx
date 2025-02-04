@@ -23,20 +23,22 @@ function AnalisisADN() {
 
   useEffect(() => {
     async function fetchPaciente() {
-      if (!pacienteId) {
-        console.error("❌ pacienteId no encontrado en la URL.");
-        return;
-      }
-      try {
-        const data = await getPacienteById(pacienteId);
-        console.log("✅ Datos del paciente recibidos:", data);
-        setPaciente(data);
-      } catch (error) {
-        console.error("❌ Error al obtener el paciente:", error);
-      }
+        if (!pacienteId) {
+            console.error("❌ pacienteId no encontrado en la URL.");
+            return;
+        }
+        try {
+            const data = await getPacienteById(pacienteId);
+            console.log("✅ Datos del paciente recibidos:", data);
+            setPaciente(data);
+        } catch (error) {
+            console.error("❌ Error al obtener el paciente:", error);
+            setPaciente(null);  // Evita que el componente crashee
+        }
     }
     fetchPaciente();
   }, [pacienteId]);
+
 
   // 🔹 Este efecto se ejecutará cuando resultado cambie y actualizará pdfListo
   useEffect(() => {
