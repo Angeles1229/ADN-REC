@@ -28,23 +28,22 @@ export const getPacientes = async (req, res) => {
 // 🔹 Obtener un paciente por ID (validando que pertenezca al laboratorista)
 export const getPaciente = async (req, res) => {
   const { id } = req.params;
-  console.log("📌 ID recibido en la API:", id);
+  const laboratoristaID = parseInt(req.headers["laboratorista_id"]); // ⬅️ Obtener desde headers
 
   try {
-    const paciente = await PacienteModel.findByPk(id);
+    const paciente = await PacienteModel.findOne({
+      where: { id, laboratorista_id: laboratoristaID },
+    });
+
     if (!paciente) {
-      console.error("❌ Paciente no encontrado en la base de datos.");
-      return res.status(404).json({ message: "Paciente no encontrado." });
+      return res.status(404).json({ message: "Paciente no encontrado o no autorizado." });
     }
 
-    console.log("✅ Paciente encontrado:", paciente);
     res.json(paciente);
   } catch (error) {
-    console.error("❌ Error en getPaciente:", error);
     res.status(500).json({ message: "Error al obtener el paciente", error });
   }
 };
-
 
 // 🔹 Crear un nuevo paciente asegurando que pertenece al laboratorista autenticado
 export const createPaciente = async (req, res) => {

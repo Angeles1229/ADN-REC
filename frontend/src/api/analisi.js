@@ -5,17 +5,14 @@ const API_PACIENTES_URL = "http://localhost:4000/api/pacientes"; // ✅ Nueva UR
 
 // 🔹 Obtener los datos de un paciente por ID
 export const getPacienteById = async (id) => {
-    console.log("📌 Solicitando paciente con ID:", id);
     try {
         const response = await axios.get(`${API_PACIENTES_URL}/${id}`);
-        console.log("✅ Respuesta de la API:", response.data);
         return response.data;
     } catch (error) {
-        console.error(`❌ Error al obtener el paciente con ID ${id}:`, error);
+        console.error(`Error al obtener el paciente con ID ${id}:`, error);
         throw error;
     }
 };
-
 
 // 🔹 Subir archivo CSV para análisis de ADN
 export const subirArchivoADN = async (file, paciente_id) => {
