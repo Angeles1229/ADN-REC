@@ -108,3 +108,8 @@ export const deletePaciente = async (id) => {
   }
 };
 
+export const getHistorialADN = async (pacienteId) => {
+  const response = await axios.get(`http://localhost:4000/api/analisis/historial_adn/${pacienteId}`);
+  return response.data;
+};
+

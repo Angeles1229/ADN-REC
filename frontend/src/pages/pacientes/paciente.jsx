@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2"; // Importa SweetAlert2
-import { getPacientesRequest, deletePaciente, updatePaciente, createPaciente } from "../../api/paciente";
+import { getPacientesRequest, deletePaciente, updatePaciente, createPaciente, getHistorialADN } from "../../api/paciente";
+
 import PacienteForm from "./pacientesform";
 import { useNavigate } from "react-router-dom";
 import "../../styles/paciente.css";
@@ -36,7 +37,31 @@ function Paciente() {
     );
     setFilteredPacientes(filtered);
   };
+  const handleVerHistorial = async (pacienteId) => {
+    try {
+      const historial = await getHistorialADN(pacienteId);
+      if (historial.length === 0) {
+        Swal.fire("Historial Vacío", "Este paciente no tiene registros de ADN.", "info");
+        return;
+      }
 
+      let historialHTML = "<ul>";
+      historial.forEach((entry) => {
+        historialHTML += `<li><b>${entry.fecha_subida}</b> - ${entry.enfermedad_detectada}</li>`;
+      });
+      historialHTML += "</ul>";
+
+      Swal.fire({
+        title: "Historial de Análisis ADN",
+        html: historialHTML,
+        icon: "info",
+        confirmButtonText: "Cerrar",
+      });
+    } catch (error) {
+      console.error("Error al obtener el historial:", error);
+      Swal.fire("Error", "No se pudo cargar el historial.", "error");
+    }
+  };
   // Eliminar paciente con SweetAlert2
   const handleDelete = async (id) => {
     Swal.fire({
@@ -145,6 +170,7 @@ function Paciente() {
               <button onClick={() => handleSelectPaciente(paciente)}>
                 Ingresar ADN
               </button>
+              <button onClick={() => handleVerHistorial(paciente.id)}>Ver Historial</button>
             </div>
           </li>
         ))}
