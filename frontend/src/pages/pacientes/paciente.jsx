@@ -40,17 +40,19 @@ function Paciente() {
   const handleVerHistorial = async (pacienteId) => {
     try {
       const historial = await getHistorialADN(pacienteId);
-      if (historial.length === 0) {
+  
+      // Verificar si la respuesta es nula o está vacía
+      if (!historial || historial.length === 0) {
         Swal.fire("Historial Vacío", "Este paciente no tiene registros de ADN.", "info");
         return;
       }
-
+  
       let historialHTML = "<ul>";
       historial.forEach((entry) => {
         historialHTML += `<li><b>${entry.fecha_subida}</b> - ${entry.enfermedad_detectada}</li>`;
       });
       historialHTML += "</ul>";
-
+  
       Swal.fire({
         title: "Historial de Análisis ADN",
         html: historialHTML,
@@ -59,7 +61,14 @@ function Paciente() {
       });
     } catch (error) {
       console.error("Error al obtener el historial:", error);
-      Swal.fire("Error", "No se pudo cargar el historial.", "error");
+  
+      // Si el error es 404, significa que no se encontró historial, entonces mostrar un mensaje informativo
+      if (error.response && error.response.status === 404) {
+        Swal.fire("Historial Vacío", "Este paciente no tiene registros de ADN.", "info");
+      } else {
+        // Si es otro error, mostrar el mensaje genérico de error
+        Swal.fire("Error", "No se pudo cargar el historial.", "error");
+      }
     }
   };
   // Eliminar paciente con SweetAlert2
