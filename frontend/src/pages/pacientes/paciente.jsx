@@ -197,7 +197,7 @@ function Paciente() {
             }}
             onSubmit={(newPaciente) => handleAddPaciente(newPaciente)}
           />
-          <button onClick={() => setAddingPaciente(false)}>Cancelar</button>
+          
         </div>
       )}
 

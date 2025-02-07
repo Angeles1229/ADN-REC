@@ -8,13 +8,19 @@ function PacienteForm({ initialData, onSubmit }) {
   const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
-    nombre: Yup.string().required("El nombre es obligatorio"),
-    apellido: Yup.string().required("El apellido es obligatorio"),
+    nombre: Yup.string()
+      .matches(/^[a-zA-ZÀ-ÿ\s]+$/, "El nombre solo puede contener letras y espacios")
+      .required("El nombre es obligatorio"),
+    apellido: Yup.string()
+      .matches(/^[a-zA-ZÀ-ÿ\s]+$/, "El apellido solo puede contener letras y espacios")
+      .required("El apellido es obligatorio"),
     edad: Yup.number()
       .typeError("La edad debe ser un número")
       .required("La edad es obligatoria")
       .positive("La edad debe ser un número positivo")
-      .integer("La edad debe ser un número entero"),
+      .integer("La edad debe ser un número entero")
+      .min(1, "La edad mínima es 1")
+      .max(120, "La edad máxima es 120"),
     genero: Yup.string().required("El género es obligatorio"),
   });
 
@@ -26,7 +32,7 @@ function PacienteForm({ initialData, onSubmit }) {
           validationSchema={validationSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             setSubmitting(true);
-          
+
             const laboratoristaId = localStorage.getItem("laboratorista_id");
             if (!laboratoristaId) {
               Swal.fire({
@@ -38,19 +44,18 @@ function PacienteForm({ initialData, onSubmit }) {
               setSubmitting(false);
               return;
             }
-          
-            const pacienteData = { ...values, laboratorista_id: parseInt(laboratoristaId) }; // ✅ Convertir a número
-            console.log("📩 Datos enviados al backend:", pacienteData); // ✅ Depuración
-          
+
+            const pacienteData = { ...values, laboratorista_id: parseInt(laboratoristaId) };
+
             try {
               const response = await fetch("http://localhost:4000/api/pacientes", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(pacienteData),
               });
-          
+
               const data = await response.json();
-          
+
               if (response.ok) {
                 Swal.fire({
                   title: "Paciente agregado",
@@ -59,9 +64,12 @@ function PacienteForm({ initialData, onSubmit }) {
                   confirmButtonText: "Aceptar"
                 }).then(() => {
                   resetForm();
-                  window.location.reload();
+                  navigate("/pacientes");
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 100);
                 });
-          
+
               } else {
                 Swal.fire({
                   title: "Error",
@@ -79,10 +87,9 @@ function PacienteForm({ initialData, onSubmit }) {
                 confirmButtonText: "Aceptar"
               });
             }
-          
+
             setSubmitting(false);
           }}
-          
         >
           {({ isSubmitting }) => (
             <Form className="form-container">
@@ -111,6 +118,18 @@ function PacienteForm({ initialData, onSubmit }) {
               <div className="form-buttons">
                 <button type="submit" disabled={isSubmitting} className="submit-button">
                   {isSubmitting ? "Guardando..." : "Guardar"}
+                </button>
+                <button
+                  type="button"
+                  className="cancel-button"
+                  onClick={() => {
+                    navigate("/pacientes");
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 100);
+                  }}
+                >
+                  Cancelar
                 </button>
               </div>
             </Form>
