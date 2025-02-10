@@ -148,6 +148,15 @@ function AnalisisADN() {
   return (
     <div className="bodye">
       <div className="analisis-container">
+        
+        {/* Botones arriba alineados a la derecha */}
+        <div className="top-buttons">
+          <button onClick={() => navigate("/pacientes")} className="back-button">
+            ⬅️ Regresar
+          </button>
+          
+      </div>
+  
         <h1>Análisis de ADN</h1>
         {estado.paciente ? (
           <h2 style={{ color: "blue" }}>
@@ -156,47 +165,46 @@ function AnalisisADN() {
         ) : (
           <p>Cargando información del paciente...</p>
         )}
-        <form onSubmit={handleSubmit}>
-          <input type="file" accept=".csv" onChange={handleFileChange} required />
-          <button type="submit" className="submit-button">
-            {estado.cargando ? "Analizando..." : "Subir y Analizar"}
-          </button>
-        </form>
+  
+          <form onSubmit={handleSubmit}>
+            <input type="file" accept=".csv" onChange={handleFileChange} required />
+            <div className="form-buttons">
+              <button type="submit" className="submit-button">
+                {estado.cargando ? "Analizando..." : "Subir y Analizar"}
+              </button>
+              <button className="pdf-button" onClick={handleDownloadPDF} disabled={!estado.pdfListo}>
+                {estado.pdfListo ? "Guardar Informe en PDF" : "Generando PDF..."}
+              </button>
+            </div>
+          </form>
 
+  
         <div ref={pdfRef} className="analisis-reporte">
           {estado.resultado && (
             <div className="analisis-resultado">
               <h3>Resultados del Análisis:</h3>
-              <p><strong>Enfermedad Detectada:</strong></p>
-              {estado.resultado.enfermedad_detectada ? (
-                <p style={{ color: "blue" }}>
-                  {Array.isArray(estado.resultado.enfermedad_detectada)
-                    ? estado.resultado.enfermedad_detectada.join(", ")
-                    : estado.resultado.enfermedad_detectada}
-                </p>
-              ) : (
-                <p>No se detectaron enfermedades</p>
-              )}
-
+              <div className="resultado-en-linea">
+                <strong>Enfermedad Detectada:</strong>
+                <span className="enfermedad-detectada">
+                  {estado.resultado.enfermedad_detectada
+                    ? (Array.isArray(estado.resultado.enfermedad_detectada)
+                      ? estado.resultado.enfermedad_detectada.join(", ")
+                      : estado.resultado.enfermedad_detectada)
+                    : "No se detectaron enfermedades"}
+                </span>
+              </div>
+  
               {estado.resultado.descripcion_enfermedad && (
                 <p><strong>Descripción:</strong> {estado.resultado.descripcion_enfermedad}</p>
               )}
             </div>
           )}
-
+  
           {estado.dataADN.length > 0 && <Grafico data={estado.dataADN} />}
         </div>
-
-        <button className="pdf-button" onClick={handleDownloadPDF} disabled={!estado.pdfListo}>
-          {estado.pdfListo ? "Guardar Informe en PDF" : "Generando PDF..."}
-        </button>
-
-        <button onClick={() => navigate("/pacientes")} className="back-button">
-          Regresar a Módulo Pacientes
-        </button>
       </div>
     </div>
-  );
+  );  
 }
 
 export default AnalisisADN;

@@ -9,7 +9,7 @@ function Register() {
     apellido: "",
     email: "",
     password: "",
-    telefono: "",
+    confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -30,14 +30,13 @@ function Register() {
   const validateForm = () => {
     let newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^[0-9]{10}$/; // Suponiendo que el teléfono tiene 10 dígitos
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Min 8 caracteres, al menos 1 letra y 1 número
 
     if (!formData.nombre.trim()) newErrors.nombre = "El nombre es obligatorio.";
     if (!formData.apellido.trim()) newErrors.apellido = "El apellido es obligatorio.";
     if (!formData.email.match(emailRegex)) newErrors.email = "Correo inválido.";
     if (!formData.password.match(passwordRegex)) newErrors.password = "La contraseña debe tener al menos 8 caracteres, incluir letras y números.";
-    if (formData.telefono && !formData.telefono.match(phoneRegex)) newErrors.telefono = "El teléfono debe tener 10 dígitos.";
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Las contraseñas no coinciden.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Retorna true si no hay errores
@@ -52,7 +51,12 @@ function Register() {
       const response = await fetch("http://localhost:4000/api/laboratoristas/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          nombre: formData.nombre,
+          apellido: formData.apellido,
+          email: formData.email,
+          password: formData.password,
+        }),
       });
 
       const data = await response.json();
@@ -113,9 +117,9 @@ function Register() {
         </div>
 
         <div className="form-group">
-          <label>Teléfono:</label>
-          <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} className="form-input" />
-          {errors.telefono && <p className="error-message">{errors.telefono}</p>}
+          <label>Confirmar Contraseña:</label>
+          <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} className="form-input" />
+          {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
         </div>
 
         <p className="login-link">

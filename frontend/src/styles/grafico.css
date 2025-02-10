@@ -34,9 +34,10 @@ h1 {
 
 /* Contenedor del gráfico */
 .chart-container {
-  margin-left:100px;
+  margin-left:200px;
   text-align: center;
   margin-top: 20px;
+  justify-content: center;
 }
 
 /* Estilos para el gráfico de D3 */

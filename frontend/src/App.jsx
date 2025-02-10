@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Paciente from "./pages/pacientes/paciente";
 import PacienteForm from "./pages/pacientes/pacientesform";
@@ -41,6 +42,7 @@ function App() {
           }
         />
       </Routes>
+      <Footer />
     </AuthProvider>
   );
 }

@@ -21,7 +21,7 @@
 /* Títulos */
 .analisis-container h1 {
   font-size: 2rem;
-  color: #163742;
+  color: #4bc484;
 }
 
 .analisis-container h2 {
@@ -43,7 +43,7 @@
 
 /* Botones */
 .analisis-container button {
-  width: 80%;
+  width: 20%;
   padding: 12px;
   font-size: 1rem;
   border: none;
@@ -82,6 +82,18 @@
   background: #e9f5ff;
  
 }
+/* Alinear la enfermedad detectada en la misma línea */
+.resultado-en-linea {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+}
+
+.enfermedad-detectada {
+  color: blue;
+  font-weight: bold;
+}
 
 .analisis-resultado h3 {
   color: #163742;
@@ -102,3 +114,69 @@
   background: #fff;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+/* Estilos para los botones en la esquina */
+/* Mover los botones dentro del contenedor y alinearlos a la derecha */
+.top-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Alinear a la derecha */
+  gap: 8px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+/* Ajustar el tamaño de los botones */
+.top-buttons button {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 180px; /* Asegurar que ambos botones tengan el mismo ancho */
+}
+
+/* Botón de regresar */
+.back-button {
+  background-color: #163742;
+  color: white;
+  border: none;
+}
+
+.back-button:hover {
+  background-color: #3f6084;
+}
+
+/* Botón de guardar PDF */
+.pdf-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+}
+
+.pdf-button:hover {
+  background-color: #45a049;
+}
+
+/* Asegurar que el contenedor analisis-container esté en posición relativa para que los botones se ubiquen correctamente */
+.analisis-container {
+  position: relative;
+}
+
+/* Contenedor de los botones en el formulario */
+.form-buttons {
+  display: flex;
+  justify-content: center; /* Centrar los botones */
+  gap: 15px; /* Espaciado entre los botones */
+  margin-top: 20px; /* Espaciado superior */
+}
+
+/* Ajustar el tamaño y estilo de los botones */
+.submit-button, .pdf-button {
+  width: auto;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
