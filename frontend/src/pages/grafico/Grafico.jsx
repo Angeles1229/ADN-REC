@@ -9,7 +9,7 @@ function Grafico({ data }) {
   if (data.length === 0) return null;
 
   const width = Math.max(data.length * 25 + 150, window.innerWidth * 0.9);
-  const height = 400;
+  const height = 350; // Reduciendo la altura total del gráfico
   const radius = 12;
   const helixSpacing = 50;
   const curveHeight = 80;
@@ -37,16 +37,59 @@ function Grafico({ data }) {
   });
 
   return (
-    <div className="bodyg">
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <h1>ADN Analizado</h1>
+    <div className="bodyg" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+      {/* Contenedor del gráfico con posición relativa para contener la leyenda */}
+      <div style={{ position: "relative", textAlign: "center", marginTop: "-30px" }}> {/* Subir todo */}
+        <h1 style={{ color: "#33FF57", marginBottom: "5px" }}>ADN Analizado</h1>
+
         <div
           ref={containerRef}
           className="chart-container"
-          style={{ width: "100%", overflowX: "auto", whiteSpace: "nowrap", paddingBottom: "10px" }}
+          style={{
+            width: "100%",
+            overflowX: "auto",
+            whiteSpace: "nowrap",
+            paddingBottom: "10px",
+            position: "relative",
+            display: "flex",
+          }}
         >
+          {/* Leyenda en la parte superior izquierda dentro del gráfico */}
+          <div
+            className="leyenda"
+            style={{
+              position: "absolute",
+              top: "5px", // Se subió más
+              left: "10px",
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              padding: "10px",
+              borderRadius: "5px",
+              color: "#fff",
+              fontSize: "14px",
+            }}
+          >
+            <h3 style={{ margin: "0 0 5px 0", fontSize: "14px", textAlign: "left" }}>Leyenda</h3>
+            {Object.entries(colors).map(([key, color]) => (
+              <div key={key} style={{ display: "flex", alignItems: "center", marginBottom: "5px" }}>
+                <div
+                  style={{
+                    width: "12px",
+                    height: "12px",
+                    backgroundColor: color,
+                    marginRight: "8px",
+                    borderRadius: "3px",
+                  }}
+                ></div>
+                <span>
+                  {key === "A" ? "Adenina (A)" : key === "T" ? "Timina (T)" : key === "C" ? "Citosina (C)" : key === "G" ? "Guanina (G)" : "Mutación"}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* SVG con el gráfico */}
           <svg width={width} height={height}>
-            <g transform={`translate(${width / 10}, ${height / 2})`}>
+            <g transform={`translate(${width / 10}, ${height / 2 - 20})`}> {/* Se subió todo el gráfico */}
               {nucleotidos.map((d, i) => (
                 <g key={i}>
                   {/* Animación de círculos con framer-motion */}
@@ -59,15 +102,21 @@ function Grafico({ data }) {
                     animate={{ cy: [d.y1 - 10, d.y1 + 10] }}
                     transition={{ repeat: Infinity, repeatType: "reverse", duration: 1.5, ease: "easeInOut" }}
                     onMouseEnter={(event) => {
+                      const rect = containerRef.current.getBoundingClientRect();
                       setTooltip({
                         visible: true,
-                        x: event.pageX + 15,
-                        y: event.pageY - 25,
+                        x: event.clientX - rect.left + 10,
+                        y: event.clientY - rect.top - 10,
                         text: `Nucleótido: ${d.nucleotido}<br>Posición: ${d.posicion}<br>Mutación: ${d.isMutated ? "Sí" : "No"}`,
                       });
                     }}
                     onMouseMove={(event) => {
-                      setTooltip((prev) => ({ ...prev, x: event.pageX + 15, y: event.pageY - 25 }));
+                      const rect = containerRef.current.getBoundingClientRect();
+                      setTooltip((prev) => ({
+                        ...prev,
+                        x: event.clientX - rect.left + 10,
+                        y: event.clientY - rect.top - 10,
+                      }));
                     }}
                     onMouseLeave={() => {
                       setTooltip({ visible: false, x: 0, y: 0, text: "" });
@@ -82,15 +131,21 @@ function Grafico({ data }) {
                     animate={{ cy: [d.y2 - 10, d.y2 + 10] }}
                     transition={{ repeat: Infinity, repeatType: "reverse", duration: 1.5, ease: "easeInOut" }}
                     onMouseEnter={(event) => {
+                      const rect = containerRef.current.getBoundingClientRect();
                       setTooltip({
                         visible: true,
-                        x: event.pageX + 15,
-                        y: event.pageY - 25,
+                        x: event.clientX - rect.left + 10,
+                        y: event.clientY - rect.top - 10,
                         text: `Nucleótido: ${d.nucleotido}<br>Posición: ${d.posicion}<br>Mutación: ${d.isMutated ? "Sí" : "No"}`,
                       });
                     }}
                     onMouseMove={(event) => {
-                      setTooltip((prev) => ({ ...prev, x: event.pageX + 15, y: event.pageY - 25 }));
+                      const rect = containerRef.current.getBoundingClientRect();
+                      setTooltip((prev) => ({
+                        ...prev,
+                        x: event.clientX - rect.left + 10,
+                        y: event.clientY - rect.top - 10,
+                      }));
                     }}
                     onMouseLeave={() => {
                       setTooltip({ visible: false, x: 0, y: 0, text: "" });
@@ -111,27 +166,6 @@ function Grafico({ data }) {
           </svg>
         </div>
       </div>
-
-      {/* Tooltip dinámico */}
-      {tooltip.visible && (
-        <div
-          className="tooltip-dna"
-          style={{
-            position: "absolute",
-            left: `${tooltip.x}px`,
-            top: `${tooltip.y}px`,
-            background: "rgba(0, 0, 0, 0.8)",
-            color: "#fff",
-            padding: "8px 12px",
-            borderRadius: "5px",
-            boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
-            fontSize: "14px",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-          }}
-          dangerouslySetInnerHTML={{ __html: tooltip.text }}
-        />
-      )}
     </div>
   );
 }
