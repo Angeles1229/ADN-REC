@@ -3,25 +3,35 @@ import { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
+  // Evita doble llamada a localStorage
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem("token"));
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
+    const syncAuth = (event) => {
+      if (event.key === "token") {
+        setIsAuthenticated(!!event.newValue);
+      }
+    };
+
+    window.addEventListener("storage", syncAuth);
+    return () => window.removeEventListener("storage", syncAuth);
   }, []);
 
   const login = (token) => {
-    console.log("✅ Guardando token en localStorage:", token);
+    if (process.env.NODE_ENV === "development") {
+      console.log("✅ Guardando token:", token);
+    }
     localStorage.setItem("token", token);
     setIsAuthenticated(true);
   };
-  
+
   const logout = () => {
-    console.log("🔴 Eliminando token de localStorage");
+    if (process.env.NODE_ENV === "development") {
+      console.log("🔴 Eliminando token de localStorage");
+    }
     localStorage.removeItem("token");
     setIsAuthenticated(false);
   };
-  
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>

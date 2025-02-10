@@ -1,58 +1,69 @@
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2"; // Importa SweetAlert2
-import { getPacientesRequest, deletePaciente, updatePaciente, createPaciente, getHistorialADN } from "../../api/paciente";
-
+import {
+  getPacientesRequest,
+  deletePaciente,
+  updatePaciente,
+  createPaciente,
+  getHistorialADN
+} from "../../api/paciente";
 import PacienteForm from "./pacientesform";
 import { useNavigate } from "react-router-dom";
 import "../../styles/paciente.css";
 
 function Paciente() {
-  const [pacientes, setPacientes] = useState([]);
-  const [filteredPacientes, setFilteredPacientes] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [editingPaciente, setEditingPaciente] = useState(null);
-  const [addingPaciente, setAddingPaciente] = useState(false);
-  const [selectedPacienteForADN, setSelectedPacienteForADN] = useState(null);
+  const [estado, setEstado] = useState({
+    pacientes: [],
+    filteredPacientes: [],
+    searchTerm: "",
+    editingPaciente: null,
+    addingPaciente: false,
+  });
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    async function loadPacientes() {
-      try {
-        const response = await getPacientesRequest();
-        setPacientes(response);
-        setFilteredPacientes(response);
-      } catch (error) {
-        console.error("Error al cargar los pacientes:", error);
-      }
+  // Función para cargar los pacientes
+  const cargarPacientes = async () => {
+    try {
+      const response = await getPacientesRequest();
+      setEstado((prev) => ({
+        ...prev,
+        pacientes: response,
+        filteredPacientes: response,
+      }));
+    } catch (error) {
+      console.error("Error al cargar los pacientes:", error);
     }
+  };
 
-    loadPacientes();
+  useEffect(() => {
+    cargarPacientes();
   }, []);
 
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
-    const filtered = pacientes.filter((paciente) =>
-      `${paciente.nombre} ${paciente.apellido}`.toLowerCase().includes(term)
-    );
-    setFilteredPacientes(filtered);
+    setEstado((prev) => ({
+      ...prev,
+      searchTerm: term,
+      filteredPacientes: prev.pacientes.filter((paciente) =>
+        `${paciente.nombre} ${paciente.apellido}`.toLowerCase().includes(term)
+      ),
+    }));
   };
+
   const handleVerHistorial = async (pacienteId) => {
     try {
       const historial = await getHistorialADN(pacienteId);
-  
-      // Verificar si la respuesta es nula o está vacía
+
       if (!historial || historial.length === 0) {
         Swal.fire("Historial Vacío", "Este paciente no tiene registros de ADN.", "info");
         return;
       }
-  
-      let historialHTML = "<ul>";
-      historial.forEach((entry) => {
-        historialHTML += `<li><b>${entry.fecha_subida}</b> - ${entry.enfermedad_detectada}</li>`;
-      });
-      historialHTML += "</ul>";
-  
+
+      const historialHTML = `<ul>${historial
+        .map((entry) => `<li><b>${entry.fecha_subida}</b> - ${entry.enfermedad_detectada}</li>`)
+        .join("")}</ul>`;
+
       Swal.fire({
         title: "Historial de Análisis ADN",
         html: historialHTML,
@@ -61,17 +72,14 @@ function Paciente() {
       });
     } catch (error) {
       console.error("Error al obtener el historial:", error);
-  
-      // Si el error es 404, significa que no se encontró historial, entonces mostrar un mensaje informativo
-      if (error.response && error.response.status === 404) {
-        Swal.fire("Historial Vacío", "Este paciente no tiene registros de ADN.", "info");
-      } else {
-        // Si es otro error, mostrar el mensaje genérico de error
-        Swal.fire("Error", "No se pudo cargar el historial.", "error");
-      }
+      const errorMessage =
+        error.response?.status === 404
+          ? "Este paciente no tiene registros de ADN."
+          : "No se pudo cargar el historial.";
+      Swal.fire("Error", errorMessage, "error");
     }
   };
-  // Eliminar paciente con SweetAlert2
+
   const handleDelete = async (id) => {
     Swal.fire({
       title: "¿Estás seguro?",
@@ -86,74 +94,39 @@ function Paciente() {
       if (result.isConfirmed) {
         try {
           await deletePaciente(id);
-  
-          // 🔄 Vuelve a cargar la lista de pacientes después de eliminar
-          const updatedPacientes = await getPacientesRequest();
-          setPacientes(updatedPacientes);
-          setFilteredPacientes(updatedPacientes);
-  
+          await cargarPacientes();
           Swal.fire("Eliminado", "El paciente ha sido eliminado con éxito.", "success");
         } catch (error) {
           console.error("❌ Error al eliminar el paciente:", error);
-  
-          const errorMessage = error.response?.data?.message || "No se pudo eliminar el paciente.";
-          Swal.fire("Error", errorMessage, "error");
+          Swal.fire("Error", "No se pudo eliminar el paciente.", "error");
         }
       }
     });
   };
-  
-  
 
-  // Actualizar paciente con SweetAlert2
   const handleUpdate = async (id, updatedData) => {
-    console.log("Datos enviados a la API:", updatedData); // 🔍 Verifica qué se está enviando
     try {
-        await updatePaciente(id, updatedData);
+      await updatePaciente(id, updatedData);
+      await cargarPacientes();
+      setEstado((prev) => ({ ...prev, editingPaciente: null }));
 
-        // 🔄 Vuelve a cargar la lista de pacientes después de la actualización
-        const updatedPacientes = await getPacientesRequest();
-        setPacientes(updatedPacientes);
-        setFilteredPacientes(updatedPacientes);
-
-        setEditingPaciente(null);
-
-        Swal.fire({
-            title: "Paciente actualizado",
-            text: "Los datos han sido modificados correctamente.",
-            icon: "success",
-            confirmButtonText: "Aceptar",
-        });
+      Swal.fire("Paciente actualizado", "Los datos han sido modificados correctamente.", "success");
     } catch (error) {
-        console.error("Error al actualizar el paciente:", error);
-        Swal.fire("Error", "No se pudo actualizar el paciente.", "error");
-    }
-};
-
-
-
-  // Agregar paciente con SweetAlert2
-  const handleAddPaciente = async (newPaciente) => {
-    try {
-      const addedPaciente = await createPaciente(newPaciente);
-      setPacientes((prev) => [...prev, addedPaciente]);
-      setFilteredPacientes((prev) => [...prev, addedPaciente]);
-      setAddingPaciente(false);
-
-      Swal.fire({
-        title: "Paciente agregado",
-        text: "El paciente ha sido registrado correctamente.",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-      });
-    } catch (error) {
-      Swal.fire("Error", "No se pudo agregar el paciente.", "error");
+      console.error("Error al actualizar el paciente:", error);
+      Swal.fire("Error", "No se pudo actualizar el paciente.", "error");
     }
   };
 
-  // Seleccionar paciente para ingresar ADN
-  const handleSelectPaciente = (paciente) => {
-    navigate(`/analisis?paciente_id=${paciente.id}`);
+  const handleAddPaciente = async (newPaciente) => {
+    try {
+      await createPaciente(newPaciente);
+      await cargarPacientes();
+      setEstado((prev) => ({ ...prev, addingPaciente: false }));
+
+      Swal.fire("Paciente agregado", "El paciente ha sido registrado correctamente.", "success");
+    } catch (error) {
+      Swal.fire("Error", "No se pudo agregar el paciente.", "error");
+    }
   };
 
   return (
@@ -163,20 +136,26 @@ function Paciente() {
         <input
           type="text"
           placeholder="Buscar paciente..."
-          value={searchTerm}
+          value={estado.searchTerm}
           onChange={handleSearch}
         />
-        <button onClick={() => setAddingPaciente(true)}>Agregar Paciente</button>
+        <button onClick={() => setEstado((prev) => ({ ...prev, addingPaciente: true }))}>
+          Agregar Paciente
+        </button>
       </div>
 
       <ul>
-        {filteredPacientes.map((paciente) => (
+        {estado.filteredPacientes.map((paciente) => (
           <li key={paciente.id}>
-            <span>{paciente.nombre} {paciente.apellido} - {paciente.edad} años</span>
+            <span>
+              {paciente.nombre} {paciente.apellido} - {paciente.edad} años
+            </span>
             <div className="button-group">
-              <button onClick={() => setEditingPaciente(paciente)}>Editar</button>
+              <button onClick={() => setEstado((prev) => ({ ...prev, editingPaciente: paciente }))}>
+                Editar
+              </button>
               <button onClick={() => handleDelete(paciente.id)}>Eliminar</button>
-              <button onClick={() => handleSelectPaciente(paciente)}>
+              <button onClick={() => navigate(`/analisis?paciente_id=${paciente.id}`)}>
                 Ingresar ADN
               </button>
               <button onClick={() => handleVerHistorial(paciente.id)}>Ver Historial</button>
@@ -185,25 +164,19 @@ function Paciente() {
         ))}
       </ul>
 
-      {addingPaciente && (
+      {estado.addingPaciente && (
         <div>
           <h2>Agregar Paciente</h2>
           <PacienteForm
-            initialData={{
-              nombre: "",
-              apellido: "",
-              edad: "",
-              genero: "",
-            }}
-            onSubmit={(newPaciente) => handleAddPaciente(newPaciente)}
+            initialData={{ nombre: "", apellido: "", edad: "", genero: "" }}
+            onSubmit={handleAddPaciente}
           />
-          
         </div>
       )}
 
-      {editingPaciente && (
+      {estado.editingPaciente && (
         <>
-          <div className="overlay" onClick={() => setEditingPaciente(null)}></div>
+          <div className="overlay" onClick={() => setEstado((prev) => ({ ...prev, editingPaciente: null }))}></div>
           <div className="edit-form-container">
             <h2>Editar Paciente</h2>
             <form
@@ -215,20 +188,22 @@ function Paciente() {
                   edad: e.target.edad.value,
                   genero: e.target.genero.value,
                 };
-                handleUpdate(editingPaciente.id, updatedData);
+                handleUpdate(estado.editingPaciente.id, updatedData);
               }}
             >
-              <input name="nombre" defaultValue={editingPaciente.nombre} placeholder="Nombre" />
-              <input name="apellido" defaultValue={editingPaciente.apellido} placeholder="Apellido" />
-              <input name="edad" defaultValue={editingPaciente.edad} placeholder="Edad" type="number" />
-              <select name="genero" defaultValue={editingPaciente.genero}>
+              <input name="nombre" defaultValue={estado.editingPaciente.nombre} placeholder="Nombre" />
+              <input name="apellido" defaultValue={estado.editingPaciente.apellido} placeholder="Apellido" />
+              <input name="edad" defaultValue={estado.editingPaciente.edad} placeholder="Edad" type="number" />
+              <select name="genero" defaultValue={estado.editingPaciente.genero}>
                 <option value="M">Masculino</option>
                 <option value="F">Femenino</option>
                 <option value="Otro">Otro</option>
               </select>
               <div style={{ display: "flex", gap: "1rem" }}>
                 <button type="submit">Guardar</button>
-                <button className="cancel" onClick={() => setEditingPaciente(null)}>Cancelar</button>
+                <button className="cancel" onClick={() => setEstado((prev) => ({ ...prev, editingPaciente: null }))}>
+                  Cancelar
+                </button>
               </div>
             </form>
           </div>

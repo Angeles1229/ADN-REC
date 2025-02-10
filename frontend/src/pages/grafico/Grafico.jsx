@@ -1,37 +1,43 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import "../../styles/grafico.css";
 
 function Grafico({ data }) {
   const svgRef = useRef();
   const containerRef = useRef();
-  const [scrollPos, setScrollPos] = useState(0);
 
   useEffect(() => {
-    if (data.length > 0) {
-      const width = Math.max(data.length * 25 + 150, window.innerWidth * 0.9);
-      const height = 400;
-      const radius = 12;
-      const helixSpacing = 50;
-      const curveHeight = 80;
-      const xSpacing = 30;
+    if (data.length === 0) return;
 
-      const colors = {
-        A: "#FF5733",
-        T: "#337BFF",
-        C: "#33FF57",
-        G: "#FFC733",
-        mutacion: "#D433FF",
-      };
+    const width = Math.max(data.length * 25 + 150, window.innerWidth * 0.9);
+    const height = 400;
+    const radius = 12;
+    const helixSpacing = 50;
+    const curveHeight = 80;
+    const xSpacing = 30;
+    const waveSpeed = 800;
+    const waveAmplitude = 10;
 
-      const svg = d3.select(svgRef.current);
-      svg.selectAll("*").remove();
-      svg.attr("width", width).attr("height", height);
+    const colors = {
+      A: "#FF5733",
+      T: "#337BFF",
+      C: "#33FF57",
+      G: "#FFC733",
+      mutacion: "#D433FF",
+    };
 
-      const g = svg.append("g").attr("transform", `translate(${width / 10}, ${height / 2})`);
+    const svg = d3.select(svgRef.current);
+    svg.selectAll("*").remove();
+    svg.attr("width", width).attr("height", height);
 
-      const tooltip = d3.select("body")
+    const g = svg.append("g").attr("transform", `translate(${width / 10}, ${height / 2})`);
+
+    // Crear tooltip una sola vez
+    let tooltip = d3.select("body").select(".tooltip-dna");
+    if (tooltip.empty()) {
+      tooltip = d3.select("body")
         .append("div")
+        .attr("class", "tooltip-dna")
         .style("position", "absolute")
         .style("background", "rgba(0, 0, 0, 0.8)")
         .style("color", "#fff")
@@ -40,88 +46,81 @@ function Grafico({ data }) {
         .style("box-shadow", "0px 0px 10px rgba(0, 0, 0, 0.5)")
         .style("font-size", "14px")
         .style("opacity", 0);
-        const waveSpeed = 800; // Más bajo = más rápido, más alto = más lento
-        const waveAmplitude = 10; // Altura de la onda
-
-        data.forEach((d, i) => {
-          const x = i * xSpacing;
-          const y1 = Math.sin(i * 0.3) * curveHeight - helixSpacing;
-          const y2 = Math.sin(i * 0.3) * curveHeight + helixSpacing;
-
-          const nucleotido = d["nucleotido"] ? d["nucleotido"].trim().toUpperCase() : "";
-          const isMutated = d["mutacion"] === true;
-
-          const baseColor = colors[nucleotido] || "#999";
-          const mutationColor = colors.mutacion;
-
-          const circles = [
-            { cx: x, cy: y1 },
-            { cx: x, cy: y2 }
-          ];
-
-          circles.forEach(({ cx, cy }, index) => {
-            const circle = g.append("circle")
-              .attr("cx", cx)
-              .attr("cy", cy)
-              .attr("r", radius)
-              .attr("fill", isMutated ? mutationColor : baseColor)
-              .attr("opacity", 0.8);
-
-            // Función para animar la ola sin que se detenga al pasar el mouse
-            function animateWave() {
-              circle.transition()
-                .duration(1500)
-                .ease(d3.easeSinInOut)
-                .attr("cy", cy + Math.sin(Date.now() / waveSpeed + index * 0.5) * waveAmplitude)
-                .on("end", animateWave); // Repite la animación
-            }
-
-            animateWave();
-
-            // Eventos de interacción sin interrumpir la animación
-            circle
-              .on("mouseover", function (event) {
-                d3.select(this)
-                  .transition()
-                  .duration(200)
-                  .attr("r", radius * 1.5);
-
-                tooltip.style("opacity", 1)
-                  .html(`Nucleótido: ${nucleotido}<br>Posición: ${d.posicion}<br>Mutación: ${isMutated ? "Sí" : "No"}`)
-                  .style("left", event.pageX + 15 + "px")
-                  .style("top", event.pageY - 25 + "px");
-              })
-              .on("mousemove", function (event) {
-                tooltip.style("left", event.pageX + 15 + "px")
-                      .style("top", event.pageY - 25 + "px");
-              })
-              .on("mouseout", function () {
-                d3.select(this)
-                  .transition()
-                  .duration(200)
-                  .attr("r", radius);
-                
-                tooltip.style("opacity", 0);
-              });
-          });
-
-          // Línea curva entre los círculos
-          g.append("path")
-            .attr("d", `M ${x},${y1} Q ${x + radius},${(y1 + y2) / 2} ${x},${y2}`)
-            .attr("stroke", "#666")
-            .attr("fill", "none")
-            .attr("stroke-width", 2)
-            .attr("stroke-opacity", 0.8);
-        });
- 
     }
+
+    // Función de animación para los círculos
+    const animateWave = (circle, cy, index) => {
+      circle.transition()
+        .duration(1500)
+        .ease(d3.easeSinInOut)
+        .attr("cy", cy + Math.sin(Date.now() / waveSpeed + index * 0.5) * waveAmplitude)
+        .on("end", () => animateWave(circle, cy, index));
+    };
+
+    // Renderizar la hélice de ADN
+    data.forEach((d, i) => {
+      const x = i * xSpacing;
+      const y1 = Math.sin(i * 0.3) * curveHeight - helixSpacing;
+      const y2 = Math.sin(i * 0.3) * curveHeight + helixSpacing;
+
+      const nucleotido = d.nucleotido ? d.nucleotido.trim().toUpperCase() : "";
+      const isMutated = d.mutacion === true;
+      const baseColor = colors[nucleotido] || "#999";
+      const mutationColor = colors.mutacion;
+
+      const circles = [{ cx: x, cy: y1 }, { cx: x, cy: y2 }];
+
+      circles.forEach(({ cx, cy }, index) => {
+        const circle = g.append("circle")
+          .attr("cx", cx)
+          .attr("cy", cy)
+          .attr("r", radius)
+          .attr("fill", isMutated ? mutationColor : baseColor)
+          .attr("opacity", 0.8);
+
+        animateWave(circle, cy, index);
+
+        circle
+          .on("mouseover", (event) => {
+            d3.select(event.currentTarget)
+              .transition()
+              .duration(200)
+              .attr("r", radius * 1.5);
+
+            tooltip.style("opacity", 1)
+              .html(`Nucleótido: ${nucleotido}<br>Posición: ${d.posicion}<br>Mutación: ${isMutated ? "Sí" : "No"}`)
+              .style("left", `${event.pageX + 15}px`)
+              .style("top", `${event.pageY - 25}px`);
+          })
+          .on("mousemove", (event) => {
+            tooltip.style("left", `${event.pageX + 15}px`)
+              .style("top", `${event.pageY - 25}px`);
+          })
+          .on("mouseout", (event) => {
+            d3.select(event.currentTarget)
+              .transition()
+              .duration(200)
+              .attr("r", radius);
+
+            tooltip.style("opacity", 0);
+          });
+      });
+
+      // Línea curva entre los círculos
+      g.append("path")
+        .attr("d", `M ${x},${y1} Q ${x + radius},${(y1 + y2) / 2} ${x},${y2}`)
+        .attr("stroke", "#666")
+        .attr("fill", "none")
+        .attr("stroke-width", 2)
+        .attr("stroke-opacity", 0.8);
+    });
+
   }, [data]);
 
   return (
     <div className="bodyg">
       <div style={{ textAlign: "center", marginTop: "20px" }}>
         <h1>ADN Analizado</h1>
-
         <div
           ref={containerRef}
           className="chart-container"

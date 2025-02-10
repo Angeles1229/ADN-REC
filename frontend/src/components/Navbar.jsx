@@ -4,8 +4,27 @@ import Swal from "sweetalert2";
 import { AuthContext } from "../context/AuthContext";
 import "../index.css";
 
+const useAuth = () => useContext(AuthContext);
+
+const showAlert = (title, text, icon, confirmButtonText) => {
+  return Swal.fire({ title, text, icon, confirmButtonText });
+};
+
+const swalConfig = {
+  confirmButtonColor: "#d33",
+  cancelButtonColor: "#3085d6",
+};
+
+const Button = ({ onClick, to, children, className }) => {
+  return to ? (
+    <Link to={to} className={`button ${className}`}>{children}</Link>
+  ) : (
+    <button onClick={onClick} className={`button ${className}`}>{children}</button>
+  );
+};
+
 function Navbar() {
-  const { isAuthenticated, logout } = useContext(AuthContext);
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -13,21 +32,15 @@ function Navbar() {
       title: "¿Estás seguro?",
       text: "Tu sesión se cerrará y tendrás que volver a iniciar sesión.",
       icon: "warning",
+      ...swalConfig,
       showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
       confirmButtonText: "Sí, cerrar sesión",
-      cancelButtonText: "Cancelar"
+      cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        logout(); // Llama a la función de cierre de sesión
-        Swal.fire({
-          title: "Sesión cerrada",
-          text: "Has cerrado sesión correctamente.",
-          icon: "success",
-          confirmButtonText: "Aceptar"
-        }).then(() => {
-          navigate("/login"); // Redirige al usuario al login después de la alerta
+        logout();
+        showAlert("Sesión cerrada", "Has cerrado sesión correctamente.", "success", "Aceptar").then(() => {
+          navigate("/login");
         });
       }
     });
@@ -36,7 +49,7 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="logo">
-        <img src="/genetico.png" alt="ADN-REC Logo" className="logo-image" />
+        <img src="/genetico.png" className="logo-image" />
         <h1 className="logo">ADN-REC</h1>
       </div>
 
@@ -53,13 +66,11 @@ function Navbar() {
 
       <div className="auth-buttons">
         {isAuthenticated ? (
-          <button onClick={handleLogout} className="button logout-button">
-            Cerrar Sesión
-          </button>
+          <Button onClick={handleLogout} className="logout-button">Cerrar Sesión</Button>
         ) : (
           <>
-            <Link to="/login" className="button login-button">Login</Link>
-            <Link to="/register" className="button register-button">Register</Link>
+            <Button to="/login" className="login-button">Login</Button>
+            <Button to="/register" className="register-button">Register</Button>
           </>
         )}
       </div>
