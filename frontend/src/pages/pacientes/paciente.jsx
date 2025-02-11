@@ -140,7 +140,7 @@ function Paciente() {
           onChange={handleSearch}
         />
         <button onClick={() => setEstado((prev) => ({ ...prev, addingPaciente: true }))}>
-          Agregar Paciente
+          ➕Agregar Paciente
         </button>
       </div>
 
@@ -152,13 +152,13 @@ function Paciente() {
             </span>
             <div className="button-group">
               <button onClick={() => setEstado((prev) => ({ ...prev, editingPaciente: paciente }))}>
-                Editar
+                ✏️Editar
               </button>
-              <button onClick={() => handleDelete(paciente.id)}>Eliminar</button>
+              <button onClick={() => handleDelete(paciente.id)}>🗑️Eliminar</button>
               <button onClick={() => navigate(`/analisis?paciente_id=${paciente.id}`)}>
-                Ingresar ADN
+                🧬Ingresar ADN
               </button>
-              <button onClick={() => handleVerHistorial(paciente.id)}>Ver Historial</button>
+              <button onClick={() => handleVerHistorial(paciente.id)}>🗂️Ver Historial</button>
             </div>
           </li>
         ))}

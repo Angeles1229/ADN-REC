@@ -39,7 +39,7 @@
 
 /* Botón agregar paciente */
 .search-container button {
-    background-color: #4e54c8; /* Azul moderno */
+    background-color: #4ec862; /* Azul moderno */
     color: white;
     padding: 0.8rem 1.5rem;
     border: none;
@@ -87,7 +87,7 @@
 
 /* Botones de cada paciente */
 .bodyp li button {
-    background-color: #343a44;
+    background-color: #06544f;
     color: white;
     padding: 0.5rem 1rem;
     border: none;

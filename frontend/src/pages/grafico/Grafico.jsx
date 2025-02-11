@@ -38,7 +38,6 @@ function Grafico({ data }) {
 
   return (
     <div className="bodyg" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      {/* Contenedor del gráfico con posición relativa para contener la leyenda */}
       <div style={{ position: "relative", textAlign: "center", marginTop: "-40px" }}>
         <h1 style={{ color: "#33FF57", marginBottom: "10px", marginTop: "10px" }}>ADN Analizado</h1>
 
@@ -54,8 +53,7 @@ function Grafico({ data }) {
             position: "relative",
             display: "flex",
           }}
-        >
-          {/* Leyenda en la parte superior izquierda dentro del gráfico */}
+          >
           <div
             className="leyenda"
             style={{
@@ -68,7 +66,7 @@ function Grafico({ data }) {
               color: "#fff",
               fontSize: "14px",
             }}
-          >
+            >
             <h3 style={{ margin: "0 0 10px 0", fontSize: "16px", textAlign: "left" }}>Leyenda</h3>
             {Object.entries(colors).map(([key, color]) => (
               <div key={key} style={{ display: "flex", alignItems: "center", marginBottom: "5px" }}>
@@ -88,12 +86,10 @@ function Grafico({ data }) {
             ))}
           </div>
 
-          {/* SVG con el gráfico */}
           <svg width={width} height={height}>
             <g transform={`translate(${width / 10}, ${height / 2})`}>
               {nucleotidos.map((d, i) => (
                 <g key={i}>
-                  {/* Animación de círculos con framer-motion */}
                   <motion.circle
                     cx={d.x}
                     cy={d.y1}
@@ -153,7 +149,6 @@ function Grafico({ data }) {
                     }}
                   />
 
-                  {/* Línea curva entre los círculos */}
                   <path
                     d={`M ${d.x},${d.y1} Q ${d.x + radius},${(d.y1 + d.y2) / 2} ${d.x},${d.y2}`}
                     stroke="#666"
@@ -166,7 +161,6 @@ function Grafico({ data }) {
             </g>
           </svg>
 
-          {/* Tooltip dinámico */}
           {tooltip.visible && (
             <div
               className="tooltip-dna"
@@ -187,9 +181,26 @@ function Grafico({ data }) {
             />
           )}
         </div>
-            {/* ADN sin mutaciones */}
-            <h2 style={{ color: "#33FF57", marginTop: "-30px" }}>ADN Sin Mutaciones</h2>
+
+        <h1 style={{ color: "#33FF57", marginTop: "-30px", marginRight: "-50px" }}>ADN Sin Mutaciones</h1>
+
+        <div
+          ref={containerRef}
+          className="chart-container2"
+          style={{
+            width: "100%",
+            overflowX: "auto",
+            whiteSpace: "nowrap",
+            paddingBottom: "10px",
+            position: "relative",
+            display: "flex",
+            marginRight: "-100px"
+          }}
+          >
+
+
             <svg width="100%" height={height}>
+              
           <g transform={`translate(${width / 2 - (nucleotidos.length * xSpacing) / 2}, ${height / 2})`}>
               {nucleotidos.map((d, i) => (
                 <g key={i}>
@@ -200,6 +211,7 @@ function Grafico({ data }) {
               ))}
             </g>
           </svg>
+          </div>
       </div>
     </div>
   );

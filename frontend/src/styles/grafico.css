@@ -34,7 +34,7 @@ h1 {
 
 /* Contenedor del gráfico */
 .chart-container {
-  margin-left:170px;
+  margin-left:225px;
   text-align: center;
   margin-top: -30px;
   justify-content: center;
@@ -42,6 +42,18 @@ h1 {
   max-width: 100%;
   height: auto;
 }
+
+
+.chart-container2 {
+  margin-left:130px;
+  text-align: center;
+  margin-top: -30px;
+  justify-content: center;
+  overflow: auto;
+  max-width: 100%;
+  height: auto;
+}
+
 
 /* Estilos para el gráfico de D3 */
 #chart {
