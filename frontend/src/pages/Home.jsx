@@ -22,6 +22,14 @@ function Home() {
         })
         .catch((err) => console.error("❌ Error al obtener el perfil:", err));
     }
+
+    // PREVENIR DUPLICADOS: Verificar si el script ya existe
+    if (!document.querySelector("script[src='/particles.js']")) {
+      const script = document.createElement("script");
+      script.src = "/particles.js"; // Cargar el script de partículas
+      script.async = true;
+      document.body.appendChild(script);
+    }
   }, []);
 
   return (

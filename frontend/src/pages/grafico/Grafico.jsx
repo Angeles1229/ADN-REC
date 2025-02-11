@@ -46,7 +46,7 @@ function Grafico({ data }) {
           ref={containerRef}
           className="chart-container"
           style={{
-            width: "100%",
+            width: "80%",
             overflowX: "auto",
             whiteSpace: "nowrap",
             paddingBottom: "10px",
@@ -59,7 +59,7 @@ function Grafico({ data }) {
             style={{
               position: "absolute",
               top: "5px",
-              left: "50px",
+              left: "20px",
               backgroundColor: "rgba(0, 0, 0, 0.7)",
               padding: "10px",
               borderRadius: "5px",

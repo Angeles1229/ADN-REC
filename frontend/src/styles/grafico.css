@@ -129,3 +129,18 @@ rect:hover {
   font-weight: bold;
   font-size: 1.1rem;
 }
+.tooltip-dna {
+  position: absolute;
+  left: 50px !important;
+  top: 50px !important;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(300%, 300%);
+  
+}
