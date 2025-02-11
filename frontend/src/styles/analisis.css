@@ -4,7 +4,7 @@
   padding: 0;
   font-family: Arial, sans-serif;
   
-  color: #f0eff4;
+  color: #1a191e;
 }
 
 /* Contenedor del análisis */
@@ -55,12 +55,12 @@
 
 /* Botón de subir archivo */
 .submit-button {
-  background-color: #28a745;
+  background-color: #2876a7;
   color: #fff;
 }
 
 .submit-button:hover {
-  background-color: #218838;
+  background-color: #49514b;
 }
 
 /* Botón para regresar */
