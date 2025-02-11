@@ -49,7 +49,7 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="logo">
-        <img src="/genetico.png" className="logo-image" />
+        <img src="/genetico.png" className="logo-image" alt="Logo ADN-REC" />
         <h1 className="logo">ADN-REC</h1>
       </div>
 
@@ -58,9 +58,14 @@ function Navbar() {
           <Link to="/" className="nav-link">Inicio</Link>
         </li>
         {isAuthenticated && (
-          <li className="nav-item">
-            <Link to="/pacientes" className="nav-link">Pacientes</Link>
-          </li>
+          <>
+            <li className="nav-item">
+              <Link to="/pacientes" className="nav-link">Pacientes</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/enfermedades" className="nav-link">Enfermedades</Link>
+            </li>
+          </>
         )}
       </ul>
 

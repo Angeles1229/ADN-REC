@@ -7,7 +7,7 @@ import morgan from "morgan";
 import pacientesRoutes from "./routes/pacientes.routes.js";
 import laboratoristaRoutes from "./routes/laboratorista.routes.js";
 import analizarRoutes from "./routes/analizar.routes.js";
-
+import enfermedadesRoutes from "./routes/enfermedades.routes.js";
 const app = express();
 
 // Middleware
@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev")); // Logging profesional
-
+app.use("/api", enfermedadesRoutes);
 // Rutas principales
 app.use("/api/analisis", analizarRoutes);
 app.use("/api/pacientes", pacientesRoutes);
