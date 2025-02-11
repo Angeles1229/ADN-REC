@@ -36,8 +36,11 @@ h1 {
 .chart-container {
   margin-left:170px;
   text-align: center;
-  margin-top: 20px;
+  margin-top: -30px;
   justify-content: center;
+  overflow: auto;
+  max-width: 100%;
+  height: auto;
 }
 
 /* Estilos para el gráfico de D3 */

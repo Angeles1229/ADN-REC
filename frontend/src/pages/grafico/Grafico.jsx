@@ -37,10 +37,11 @@ function Grafico({ data }) {
   });
 
   return (
-    <div className="bodyg" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+    <div className="bodyg" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       {/* Contenedor del gráfico con posición relativa para contener la leyenda */}
-      <div style={{ position: "relative", textAlign: "center", marginTop: "20px" }}>
-        <h1 style={{ color: "#33FF57", marginBottom: "10px" }}>ADN Analizado</h1>
+      <div style={{ position: "relative", textAlign: "center", marginTop: "-40px" }}>
+        <h1 style={{ color: "#33FF57", marginBottom: "10px", marginTop: "10px" }}>ADN Analizado</h1>
+
 
         <div
           ref={containerRef}
@@ -59,8 +60,8 @@ function Grafico({ data }) {
             className="leyenda"
             style={{
               position: "absolute",
-              top: "10px",
-              left: "10px",
+              top: "5px",
+              left: "50px",
               backgroundColor: "rgba(0, 0, 0, 0.7)",
               padding: "10px",
               borderRadius: "5px",
@@ -186,6 +187,19 @@ function Grafico({ data }) {
             />
           )}
         </div>
+            {/* ADN sin mutaciones */}
+            <h2 style={{ color: "#33FF57", marginTop: "-30px" }}>ADN Sin Mutaciones</h2>
+            <svg width="100%" height={height}>
+          <g transform={`translate(${width / 2 - (nucleotidos.length * xSpacing) / 2}, ${height / 2})`}>
+              {nucleotidos.map((d, i) => (
+                <g key={i}>
+                  <circle cx={d.x} cy={d.y1} r={radius} fill={colors[d.nucleotido] || "#999"} opacity={0.8} />
+                  <circle cx={d.x} cy={d.y2} r={radius} fill={colors[d.nucleotido] || "#999"} opacity={0.8} />
+                  <path d={`M ${d.x},${d.y1} Q ${d.x + radius},${(d.y1 + d.y2) / 2} ${d.x},${d.y2}`} stroke="#666" fill="none" strokeWidth={2} strokeOpacity={0.8} />
+                </g>
+              ))}
+            </g>
+          </svg>
       </div>
     </div>
   );
