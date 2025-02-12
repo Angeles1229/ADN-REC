@@ -3,7 +3,7 @@ import { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // Evita doble llamada a localStorage
+  
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem("token"));
 
   useEffect(() => {

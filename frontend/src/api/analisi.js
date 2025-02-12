@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000/api"; // Sustituye con la URL correcta
+const BASE_URL = "http://localhost:4000/api"; 
 const API_URL = `${BASE_URL}/analisis`;
 const API_PACIENTES_URL = `${BASE_URL}/pacientes`;
 
-// Función para obtener laboratorista_id desde localStorage
+
 const getLaboratoristaId = () => {
     const id = localStorage.getItem("laboratorista_id");
     if (!id) {
@@ -14,7 +14,7 @@ const getLaboratoristaId = () => {
     return id;
 };
 
-// Obtener los datos de un paciente por ID
+
 export const getPacienteById = async (id) => {
     try {
         const laboratoristaId = getLaboratoristaId();
@@ -31,7 +31,7 @@ export const getPacienteById = async (id) => {
     }
 };
 
-// Subir archivo CSV para análisis de ADN
+
 export const subirArchivoADN = async (file, pacienteId) => {
     try {
         const formData = new FormData();
@@ -50,7 +50,7 @@ export const subirArchivoADN = async (file, pacienteId) => {
     }
 };
 
-// Obtener los análisis de ADN almacenados
+
 export const getAnalisisADN = async () => {
     try {
         const response = await axios.get(API_URL);

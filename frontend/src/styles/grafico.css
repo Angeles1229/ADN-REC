@@ -114,15 +114,15 @@ rect:hover {
 }
 
 .legend {
-  color: #FFD700; /* Cambia el color del texto de la leyenda */
+  color: #FFD700; 
 }
 
 .legend div {
-  color: #FFD700; /* Asegura que el color de los textos de cada item de la leyenda sea dorado */
+  color: #FFD700; 
 }
 
 .legend h3 {
-  color: #FFD700; /* Cambia el color del título 'Leyenda' */
+  color: #FFD700; 
 }
 
 .legend div span {

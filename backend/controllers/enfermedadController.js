@@ -1,6 +1,6 @@
 import { EnfermedadModel } from "../models/ADNModels.js"; 
 
-// Obtener todas las enfermedades
+
 export const getEnfermedades = async (req, res) => {
     try {
         const enfermedades = await EnfermedadModel.findAll();
@@ -10,7 +10,7 @@ export const getEnfermedades = async (req, res) => {
     }
 };
 
-// Obtener una enfermedad por ID
+
 export const getEnfermedadById = async (req, res) => {
     try {
         const enfermedad = await EnfermedadModel.findByPk(req.params.id);
@@ -21,7 +21,7 @@ export const getEnfermedadById = async (req, res) => {
     }
 };
 
-// Crear una nueva enfermedad
+
 export const createEnfermedad = async (req, res) => {
     try {
         const { nombre, descripcion, mutaciones_asociadas } = req.body;
@@ -32,7 +32,7 @@ export const createEnfermedad = async (req, res) => {
     }
 };
 
-// Actualizar una enfermedad existente
+
 export const updateEnfermedad = async (req, res) => {
     try {
         const enfermedad = await EnfermedadModel.findByPk(req.params.id);
@@ -45,7 +45,7 @@ export const updateEnfermedad = async (req, res) => {
     }
 };
 
-// Eliminar una enfermedad
+
 export const deleteEnfermedad = async (req, res) => {
     try {
         const enfermedad = await EnfermedadModel.findByPk(req.params.id);

@@ -9,10 +9,10 @@ import {
 
 const router = express.Router();
 
-router.get("/enfermedades", getEnfermedades); // Obtener todas
-router.get("/enfermedades/:id", getEnfermedadById); // Obtener una por ID
-router.post("/enfermedades", createEnfermedad); // Crear
-router.put("/enfermedades/:id", updateEnfermedad); // Actualizar
-router.delete("/enfermedades/:id", deleteEnfermedad); // Eliminar
+router.get("/enfermedades", getEnfermedades); 
+router.get("/enfermedades/:id", getEnfermedadById); 
+router.post("/enfermedades", createEnfermedad); 
+router.put("/enfermedades/:id", updateEnfermedad); 
+router.delete("/enfermedades/:id", deleteEnfermedad); 
 
 export default router;

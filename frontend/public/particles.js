@@ -1,23 +1,23 @@
 if (!window.particlesInitialized) {
     window.particlesInitialized = true;
   
-    // Crear el canvas dinámicamente
+    
     const canvas = document.createElement("canvas");
     canvas.id = "canvas";
-    document.body.prepend(canvas); // Se agrega al inicio del body
+    document.body.prepend(canvas); 
     const ctx = canvas.getContext("2d");
   
     let particles = [];
-    let numParticles = 100; // Puedes ajustar la cantidad de partículas
+    let numParticles = 100; 
   
-    // Ajustar tamaño del canvas
+    
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       createParticles();
     }
   
-    // Crear las partículas
+    
     function createParticles() {
       particles = [];
       for (let i = 0; i < numParticles; i++) {

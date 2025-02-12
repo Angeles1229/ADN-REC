@@ -1,6 +1,6 @@
 import { PacienteModel, LaboratoristaModel } from "../models/ADNModels.js";
 
-// 🔹 Obtener pacientes del laboratorista autenticado
+
 export const getPacientes = async (req, res) => {
   try {
     console.log("📥 Headers recibidos en getPacientes:", req.headers);
@@ -25,13 +25,12 @@ export const getPacientes = async (req, res) => {
 };
 
 
-// 🔹 Obtener un paciente por ID (validando que pertenezca al laboratorista)
-// 🔹 Obtener un paciente por ID con validación extra
+
 export const getPaciente = async (req, res) => {
   const { id } = req.params;
   const laboratoristaID = parseInt(req.headers["laboratorista_id"]); 
 
-  // 🔍 Validar si el ID del paciente y el laboratorista son correctos
+  
   if (!id || isNaN(id)) {
       return res.status(400).json({ message: "❌ ID del paciente no válido." });
   }
@@ -56,28 +55,28 @@ export const getPaciente = async (req, res) => {
   }
 };
 
-// 🔹 Crear un nuevo paciente asegurando que pertenece al laboratorista autenticado
+
 export const createPaciente = async (req, res) => {
   try {
     console.log("📩 Datos recibidos en createPaciente:", req.body);
 
     const { nombre, apellido, edad, genero, laboratorista_id } = req.body;
-    const laboratoristaID = parseInt(laboratorista_id); // ⬅ Ahora lo toma del body
+    const laboratoristaID = parseInt(laboratorista_id); 
 
-    // 1️⃣ *Validar datos obligatorios*
+    
     if (!nombre || !apellido || !edad || !genero || !laboratoristaID) {
       console.error("❌ Faltan datos obligatorios:", { nombre, apellido, edad, genero, laboratoristaID });
       return res.status(400).json({ message: "Faltan datos obligatorios." });
     }
 
-    // 2️⃣ *Verificar si el laboratorista existe*
+    
     const laboratorista = await LaboratoristaModel.findByPk(laboratoristaID);
     if (!laboratorista) {
       console.error("❌ Laboratorista no encontrado:", laboratoristaID);
       return res.status(404).json({ message: "Laboratorista no encontrado." });
     }
 
-    // 3️⃣ *Crear el paciente*
+    
     const paciente = await PacienteModel.create({
       nombre,
       apellido,
@@ -95,7 +94,7 @@ export const createPaciente = async (req, res) => {
 };
 
 
-// 🔹 Actualizar un paciente (solo si pertenece al laboratorista autenticado)
+
 export const updatePaciente = async (req, res) => {
   try {
       const { id } = req.params;
@@ -103,18 +102,18 @@ export const updatePaciente = async (req, res) => {
 
       console.log("Datos recibidos para actualizar:", req.body);
 
-      // Verificar si el paciente existe antes de actualizar
+     
       const paciente = await PacienteModel.findByPk(id);
       if (!paciente) {
           return res.status(404).json({ message: "Paciente no encontrado" });
       }
 
-      // Validar que los datos requeridos están presentes
+      
       if (!nombre || !apellido || !edad || !genero) {
           return res.status(400).json({ message: "Todos los campos son obligatorios" });
       }
 
-      // Actualizar el paciente
+      
       await paciente.update({ nombre, apellido, edad, genero });
 
       res.json({ message: "Paciente actualizado correctamente", paciente });
@@ -125,7 +124,7 @@ export const updatePaciente = async (req, res) => {
 };
 
 
-// 🔹 Eliminar un paciente (solo si pertenece al laboratorista autenticado)
+
 export const deletePaciente = async (req, res) => {
   const { id } = req.params;
   const laboratoristaID = parseInt(req.headers["laboratorista_id"]); 

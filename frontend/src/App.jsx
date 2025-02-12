@@ -19,7 +19,7 @@ function App() {
     <AuthProvider>
       <Navbar />
       <Routes>
-        {/* Rutas públicas */}
+        
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
@@ -29,7 +29,7 @@ function App() {
         <Route path="/enfermedades" element={<EnfermedadesList />} />
         <Route path="/crear-enfermedad" element={<EnfermedadForm />} />
         <Route path="/editar-enfermedad/:id" element={<EnfermedadForm />} />
-        {/* Rutas protegidas */}
+        
         <Route
           path="/pacientes"
           element={

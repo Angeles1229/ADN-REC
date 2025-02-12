@@ -23,10 +23,10 @@ function Home() {
         .catch((err) => console.error("❌ Error al obtener el perfil:", err));
     }
 
-    // PREVENIR DUPLICADOS: Verificar si el script ya existe
+    
     if (!document.querySelector("script[src='/particles.js']")) {
       const script = document.createElement("script");
-      script.src = "/particles.js"; // Cargar el script de partículas
+      script.src = "/particles.js"; 
       script.async = true;
       document.body.appendChild(script);
     }
@@ -34,7 +34,7 @@ function Home() {
 
   return (
     <div className="home-container">
-      {/* Hero Section con Efectos */}
+      
       <div className="hero-section">
         <h1 className="hero-title">
           Bienvenido {laboratorista ? laboratorista : ""} a <span>ADN-REC</span>
@@ -47,7 +47,7 @@ function Home() {
         </Link>
       </div>
 
-      {/* Sección de Características */}
+      
       <div className="features-section">
         <h2 className="features-title">¿Qué puedes hacer aquí?</h2>
         <div className="features-grid">

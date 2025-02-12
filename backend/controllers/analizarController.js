@@ -3,7 +3,7 @@ import fs from "fs";
 import csv from "csv-parser";
 import multer from "multer";
 
-// Middleware para manejar la subida de archivos
+
 const upload = multer({ dest: "uploads/" });
 
 const analizarADN = async (req, res) => {
@@ -15,13 +15,13 @@ const analizarADN = async (req, res) => {
       return res.status(400).json({ error: "No se proporcionó un archivo válido." });
     }
 
-    // Crear el análisis en la base de datos
+    
     const nuevoAnalisis = await AnalisisADNModel.create({
       paciente_id,
       nombre_archivo: archivo,
     });
 
-    // Variables para almacenar datos
+   
     const mutacionesDetectadas = new Set();
     const genesDetectados = new Set();
     const nucleotidosDetectados = new Set();
@@ -37,12 +37,12 @@ const analizarADN = async (req, res) => {
           }
 
           const gen = row.gen.trim();
-          const mutacion = row.mutacion.trim().toLowerCase(); // Normaliza a minúsculas
+          const mutacion = row.mutacion.trim().toLowerCase(); 
           const nucleotido = row.nucleotido.trim();
           const posicion = Number(row.posicion);
 
           if (!isNaN(posicion)) {
-            const tieneMutacion = mutacion === "sí"; // Solo marcará true si es exactamente "Sí"
+            const tieneMutacion = mutacion === "sí"; 
             
             secuenciaADN.push({
               gen,
@@ -68,7 +68,7 @@ const analizarADN = async (req, res) => {
         try {
           console.log("✅ Secuencia de ADN procesada correctamente.");
 
-          // Obtener todas las enfermedades de la BD
+         
           const enfermedades = await EnfermedadModel.findAll();
           let enfermedadesDetectadas = [];
 
@@ -90,7 +90,7 @@ const analizarADN = async (req, res) => {
             ? enfermedadesDetectadas.join(", ")
             : "Sin coincidencias";
 
-          // Guardar el resultado en la BD
+         
           await AnalisisADNModel.update(
             { enfermedad_detectada: resultadoEnfermedades },
             { where: { id: nuevoAnalisis.id } }
@@ -98,7 +98,7 @@ const analizarADN = async (req, res) => {
 
           console.log(`✅ Enfermedades detectadas: ${resultadoEnfermedades}`);
 
-          // Eliminar archivo CSV después del procesamiento
+          
           fs.unlink(archivo, (err) => {
             if (err) {
               console.error("⚠️ Error al eliminar archivo:", err);
@@ -107,7 +107,7 @@ const analizarADN = async (req, res) => {
             }
           });
 
-          // Enviar la respuesta
+        
           res.json({
             mensaje: "Análisis completado",
             enfermedad_detectada: resultadoEnfermedades,

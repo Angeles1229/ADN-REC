@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"; // Importa el contexto
+import { AuthContext } from "../context/AuthContext"; 
 import "../styles/login.css";
 import Swal from "sweetalert2";
 
@@ -8,7 +8,7 @@ function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // Obtiene la función login del contexto
+  const { login } = useContext(AuthContext); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,22 +27,22 @@ function Login() {
 
       if (response.ok) {
         console.log("✅ Token recibido:", data.token);
-        console.log("✅ ID del laboratorista recibido:", data.id); // ✅ Depuración del ID
+        console.log("✅ ID del laboratorista recibido:", data.id); 
 
-        // Guardar token e ID del laboratorista en localStorage
+       
         localStorage.setItem("token", data.token);
-        localStorage.setItem("laboratorista_id", data.id); // ✅ Guardar el ID
+        localStorage.setItem("laboratorista_id", data.id); 
 
-        login(data.token); // Llama a la función login del contexto
+        login(data.token); 
 
-        // Muestra SweetAlert2
+        
         Swal.fire({
           title: "¡Éxito!",
           text: "Has iniciado sesión correctamente.",
           icon: "success",
           confirmButtonText: "Aceptar"
         }).then(() => {
-          navigate("/"); // Redirige después de cerrar la alerta
+          navigate("/"); 
         });
 
       } else {

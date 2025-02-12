@@ -26,7 +26,7 @@ const EnfermedadForm = ({ closeModal, enfermedad }) => {
         await axios.post("http://localhost:4000/api/enfermedades", formData);
         Swal.fire("✅ Creado", "La enfermedad ha sido registrada correctamente.", "success");
       }
-      closeModal(); // ✅ Cierra el modal y actualiza la lista
+      closeModal(); 
     } catch (error) {
       console.error("Error al guardar la enfermedad:", error);
     }

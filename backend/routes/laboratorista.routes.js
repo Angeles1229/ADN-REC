@@ -6,7 +6,7 @@ import { SECRET_KEY } from "../config.js";
 
 const router = express.Router();
 
-// 🔹 Registro de laboratoristas
+
 router.post("/register", async (req, res) => {
   console.log("🔍 Datos recibidos en /register:", req.body);
 
@@ -31,7 +31,7 @@ router.post("/register", async (req, res) => {
       telefono,
     });
 
-    // ✅ Generar token después del registro
+    
     const token = jwt.sign(
       { id: newLaboratorista.id, email: newLaboratorista.email },
       SECRET_KEY,
@@ -40,7 +40,7 @@ router.post("/register", async (req, res) => {
 
     res.status(201).json({
       message: "Laboratorista registrado con éxito",
-      token, // ✅ Enviar token
+      token, 
       laboratorista: {
         id: newLaboratorista.id,
         nombre: newLaboratorista.nombre,
@@ -54,7 +54,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// 🔹 Inicio de sesión de laboratoristas
+
 router.post("/login", async (req, res) => {
   console.log("🔍 Datos recibidos en /login:", req.body);
 
@@ -65,20 +65,20 @@ router.post("/login", async (req, res) => {
   }
 
   try {
-    // Buscar el laboratorista por email
+    
     const laboratorista = await LaboratoristaModel.findOne({ where: { email } });
 
     if (!laboratorista) {
       return res.status(404).json({ message: "El correo no está registrado" });
     }
 
-    // Comparar contraseñas correctamente
+    
     const isMatch = await bcrypt.compare(password, laboratorista.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
-    // ✅ Generar token JWT con `laboratorista_id`
+    
     const token = jwt.sign(
       { id: laboratorista.id, email: laboratorista.email },
       SECRET_KEY,
@@ -87,8 +87,8 @@ router.post("/login", async (req, res) => {
 
     res.status(200).json({ 
       message: "Inicio de sesión exitoso", 
-      token, // ✅ Enviar token
-      id: laboratorista.id, // ✅ Enviar laboratorista_id
+      token, 
+      id: laboratorista.id, 
     });
   } catch (error) {
     console.error("Error al iniciar sesión:", error);

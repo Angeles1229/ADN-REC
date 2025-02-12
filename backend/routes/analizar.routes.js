@@ -4,10 +4,10 @@ import { AnalisisADNModel } from "../models/ADNModels.js";
 
 const router = express.Router();
 
-// Ruta para subir y analizar un archivo de ADN
+
 router.post("/subir-adn", upload.single("archivo"), analizarADN);
 
-// Ruta para obtener los análisis de ADN almacenados
+
 router.get("/analisis", async (req, res) => {
   try {
     console.log("Obteniendo análisis de ADN...");
@@ -27,15 +27,15 @@ router.get("/analisis", async (req, res) => {
   }
 });
 
-// Obtener historial de ADN de un paciente
+
 router.get("/historial_adn/:pacienteId", async (req, res) => {
   try {
     const { pacienteId } = req.params;
 
     const historial = await AnalisisADNModel.findAll({
       where: { paciente_id: pacienteId },
-      attributes: ["fecha_subida", "enfermedad_detectada"], // Solo obtenemos estos campos
-      order: [["fecha_subida", "DESC"]], // Ordenamos por fecha descendente
+      attributes: ["fecha_subida", "enfermedad_detectada"], 
+      order: [["fecha_subida", "DESC"]], 
     });
 
     if (historial.length === 0) {

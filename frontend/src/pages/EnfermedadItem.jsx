@@ -21,7 +21,7 @@ const EnfermedadItem = ({ enfermedad, onEdit, onDelete }) => {
         try {
           await axios.delete(`http://localhost:4000/api/enfermedades/${id}`);
           Swal.fire("Eliminado", "La enfermedad ha sido eliminada.", "success");
-          onDelete(); // ✅ Actualiza la lista después de eliminar
+          onDelete(); 
         } catch (error) {
           console.error("Error al eliminar la enfermedad:", error);
         }

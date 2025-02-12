@@ -1,6 +1,5 @@
 /* Login Container */
-/* Login Container */
-/* Centrado del contenedor principal */
+
 .bodyLogin {
   display: flex;
   flex-direction: column;
@@ -12,8 +11,6 @@
   padding: 2rem;
   box-sizing: border-box;
   padding-top: 5rem;
-  
-  /* Animación de entrada */
   opacity: 0;
   transform: translateY(-20px);
   animation: fadeIn 1s ease-in-out forwards;

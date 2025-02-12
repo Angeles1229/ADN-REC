@@ -12,7 +12,7 @@ function AnalisisADN() {
   const [searchParams] = useSearchParams();
   const pacienteId = searchParams.get("paciente_id");
 
-  // Estado centralizado
+  
   const [estado, setEstado] = useState({
     paciente: null,
     archivo: null,
@@ -26,7 +26,7 @@ function AnalisisADN() {
 
   const pdfRef = useRef();
 
-  // Función para manejar errores
+  
   const manejarErrores = (error, mensaje) => {
     console.error(`❌ ${mensaje}:`, error);
   };
@@ -48,7 +48,7 @@ function AnalisisADN() {
     fetchPaciente();
   }, [pacienteId]);
 
-  // Habilitar PDF cuando los datos están listos
+  
   useEffect(() => {
     if (estado.resultado && estado.paciente) {
       setEstado((prev) => ({ ...prev, pdfListo: true }));

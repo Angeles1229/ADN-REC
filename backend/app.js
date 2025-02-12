@@ -14,7 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev")); // Logging profesional
+app.use(morgan("dev")); 
 app.use("/api", enfermedadesRoutes);
 // Rutas principales
 app.use("/api/analisis", analizarRoutes);

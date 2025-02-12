@@ -17,7 +17,7 @@
     align-items: center;
   }
   .logo-image {
-    width: 60px;  /* Reducido para mejor equilibrio */
+    width: 60px;  
     height: auto;
     transition: transform 0.3s ease-in-out;
   }
@@ -108,7 +108,7 @@
   
 /* Imagen del logo */
 .logo-image {
-  width: 80px;  /* Ajusta el tamaño del logo */
+  width: 80px;  
   height: auto;
 }
 
@@ -116,23 +116,23 @@
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+  min-height: 100vh; 
 }
 
 /* Contenido principal */
 .content {
-  flex-grow: 1; /* Empuja el footer hacia abajo */
+  flex-grow: 1; 
 }
 
 /* Footer */
-/* Footer fijo en la parte inferior */
+
 .footer {
   width: 100%;
   background-color: #163742;
   color: white;
   text-align: center;
   padding: 10px;
-  margin-top: auto; /* Se coloca al final de la página */
+  margin-top: auto; 
 }
 
 

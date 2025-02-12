@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000/api"; // Sustituye con la URL correcta
+const BASE_URL = "http://localhost:4000/api"; 
 const API_URL = `${BASE_URL}/pacientes`;
 
-// Función para obtener laboratorista_id desde localStorage
+
 const getLaboratoristaId = () => {
     const id = localStorage.getItem("laboratorista_id");
     if (!id) {
@@ -13,10 +13,10 @@ const getLaboratoristaId = () => {
     return id;
 };
 
-// Función para obtener el token de autenticación
+
 const getToken = () => localStorage.getItem("token");
 
-// Obtener todos los pacientes
+
 export const getPacientesRequest = async () => {
     try {
         const token = getToken();
@@ -37,7 +37,7 @@ export const getPacientesRequest = async () => {
     }
 };
 
-// Crear un paciente
+
 export const createPaciente = async (paciente) => {
     try {
         const laboratoristaId = getLaboratoristaId();
@@ -58,7 +58,7 @@ export const createPaciente = async (paciente) => {
     }
 };
 
-// Actualizar un paciente
+
 export const updatePaciente = async (id, data) => {
     try {
         const response = await axios.put(`${API_URL}/${id}`, data, {
@@ -73,7 +73,7 @@ export const updatePaciente = async (id, data) => {
     }
 };
 
-// Eliminar un paciente
+
 export const deletePaciente = async (id) => {
     try {
         const token = getToken();
@@ -93,7 +93,7 @@ export const deletePaciente = async (id) => {
     }
 };
 
-// Obtener historial de ADN de un paciente
+e
 export const getHistorialADN = async (pacienteId) => {
     try {
         const response = await axios.get(`${BASE_URL}/analisis/historial_adn/${pacienteId}`);

@@ -29,14 +29,14 @@ const EnfermedadesList = () => {
     <div className="enfermedades-container">
       <h2>Lista de Enfermedades</h2>
 
-      {/* ✅ Botón para abrir el modal de creación */}
+      
       <button onClick={() => { setShowModal(true); setSelectedEnfermedad(null); }} className="add-enfermedad-button">
         ➕ Agregar Enfermedad
       </button>
 
       {error && <p style={{ color: "red" }}>❌ Error al obtener datos: {error}</p>}
 
-      {/* ✅ Contenedor con Grid para 2 columnas */}
+      
       <div className="enfermedades-grid">
         {enfermedades.length > 0 ? (
           enfermedades.map((enfermedad) => (
@@ -47,7 +47,7 @@ const EnfermedadesList = () => {
         )}
       </div>
 
-      {/* ✅ Modal para crear o editar enfermedades */}
+      
       {showModal && (
         <div className="enfermedad-modal">
           <div className="enfermedad-modal-content">

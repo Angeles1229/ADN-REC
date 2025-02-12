@@ -106,7 +106,7 @@
     color: black;
     padding: 20px;
     border-radius: 10px;
-    width: 420px;  /* ✅ Ajustado para que los inputs encajen bien */
+    width: 420px;  
     text-align: left;
     position: relative;
     animation: fadeIn 0.3s ease-in-out;
@@ -122,7 +122,7 @@
 /* ======= Estilos de Inputs y Textareas ======= */
 .enfermedad-modal-content input,
 .enfermedad-modal-content textarea {
-    width: calc(100% - 20px); /* ✅ Se ajusta dentro del modal */
+    width: calc(100% - 20px); 
     padding: 10px;
     margin: 8px 0;
     border: 1px solid #ccc;
@@ -130,7 +130,7 @@
     font-size: 16px;
     outline: none;
     transition: all 0.3s ease;
-    box-sizing: border-box; /* ✅ Evita desbordamiento */
+    box-sizing: border-box; 
     display: block;
 }
 

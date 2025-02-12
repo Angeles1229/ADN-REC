@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(135deg, #6b6e72, #35435c); /* Fondo gradiente */
+    background: linear-gradient(135deg, #6b6e72, #35435c); 
     min-height: 100vh;
     padding: 2rem;
     color: #ffffff;
@@ -12,7 +12,7 @@
 
 /* Título */
 .bodyp h1 {
-    color: #ffffff; /* Verde moderno */
+    color: #ffffff; 
     margin-bottom: 2rem;
     font-size: 2.5rem;
     text-align: center;
@@ -39,7 +39,7 @@
 
 /* Botón agregar paciente */
 .search-container button {
-    background-color: #4ec862; /* Azul moderno */
+    background-color: #4ec862; 
     color: white;
     padding: 0.8rem 1.5rem;
     border: none;
@@ -51,12 +51,12 @@
 }
 
 .search-container button:hover {
-    background-color: #8f94fb; /* Azul claro */
+    background-color: #8f94fb; 
     transform: scale(1.05);
 }
 
 /* Lista de pacientes */
-/* Lista de pacientes */
+
 .bodyp ul {
     list-style: none;
     padding: 0;
@@ -70,8 +70,8 @@
     margin-bottom: 1rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     display: flex;
-    align-items: center; /* Asegura que el texto y botones estén alineados verticalmente */
-    gap: 3rem; /* Reduce el espaciado entre texto y botones */
+    align-items: center; 
+    gap: 3rem; 
     color: white;
     font-size: 1rem;
 }
@@ -80,8 +80,8 @@
 /* Contenedor de botones */
 .bodyp li .button-group {
     display: flex;
-    gap: 0.3rem; /* Espaciado entre los botones */
-    /* Empuja el grupo de botones hacia la derecha */
+    gap: 0.3rem; 
+   
 }
 
 
@@ -103,26 +103,26 @@
 
 
 /* Estilo del formulario de edición */
-/* Contenedor flotante para el formulario */
+
 .bodyp .edit-form-container {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.95); /* Fondo blanco semitransparente */
+    background: rgba(255, 255, 255, 0.95); 
     padding: 2rem;
-    border-radius: 15px; /* Bordes redondeados */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Sombra flotante */
-    z-index: 1000; /* Asegura que esté sobre otros elementos */
+    border-radius: 15px; 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); 
+    z-index: 1000; 
     width: 90%;
-    max-width: 500px; /* Ancho máximo para mantenerlo compacto */
+    max-width: 500px; 
     
 }
 
 /* Título dentro de la tarjeta */
 .bodyp .edit-form-container h2 {
     text-align: center;
-    color: #333; /* Texto oscuro */
+    color: #333; 
     margin-bottom: 1rem;
     font-size: 1.8rem;
 }
@@ -130,7 +130,7 @@
 /* Campos de entrada y select */
 .bodyp .edit-form-container input,
 .bodyp .edit-form-container select {
-    width: 100%; /* Ocupa todo el ancho */
+    width: 100%; 
     padding: 0.8rem;
     margin-bottom: 1rem;
     border: 1px solid #ddd;
@@ -153,18 +153,18 @@
 }
 
 .bodyp .edit-form-container button[type="submit"] {
-    background-color: #4e54c8; /* Azul moderno */
+    background-color: #4e54c8; 
     color: white;
     font-weight: bold;
 }
 
 .bodyp .edit-form-container button[type="submit"]:hover {
-    background-color: #8f94fb; /* Azul claro */
+    background-color: #8f94fb;
     transform: scale(1.05);
 }
 
 .bodyp .edit-form-container button.cancel {
-    background-color: #ff4c4c; /* Rojo */
+    background-color: #ff4c4c; 
     color: white;
 }
 
@@ -182,6 +182,6 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5); /* Fondo negro semitransparente */
-    z-index: 999; /* Detrás del formulario */
+    background: rgba(0, 0, 0, 0.5); 
+    z-index: 999; 
 }
